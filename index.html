@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>瑛の毎日ドリル</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',sans-serif;background:#f0f4f8;color:#1a202c;min-height:100vh}
+.header{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.15);position:sticky;top:0;z-index:100}
+.header h1{font-size:1.15rem;font-weight:700}.header .date{font-size:.8rem;opacity:.9}
+.tab-bar{display:flex;background:#fff;border-bottom:2px solid #e2e8f0;position:sticky;top:52px;z-index:99}
+.tab{flex:1;padding:12px 6px;text-align:center;font-size:.82rem;font-weight:600;color:#64748b;cursor:pointer;border-bottom:3px solid transparent;transition:.2s}
+.tab:hover{color:#3b82f6;background:#f8fafc}.tab.active{color:#2563eb;border-bottom-color:#2563eb;background:#eff6ff}
+.container{max-width:860px;margin:0 auto;padding:16px}
+.card{background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);padding:24px;margin:12px 0;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.motiv-banner{background:linear-gradient(135deg,#fbbf24,#f59e0b);border-radius:16px;padding:20px 24px;margin:12px 0;color:#78350f;position:relative;overflow:hidden}
+.motiv-banner::before{content:'';position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:rgba(255,255,255,.15);border-radius:50%}
+.motiv-banner .motiv-name{font-size:1.05rem;font-weight:800;margin-bottom:4px;position:relative;z-index:1}
+.motiv-banner .motiv-text{font-size:.92rem;line-height:1.7;font-weight:600;position:relative;z-index:1}
+.motiv-banner .motiv-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:2.5rem;opacity:.6;z-index:1}
+.btn{padding:10px 24px;border:none;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-primary{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff}
+.btn-success{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+.btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
+.btn-outline{background:#fff;border:2px solid #e2e8f0;color:#475569}.btn-outline:hover{border-color:#818cf8;color:#4f46e5}
+.subject-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:20px 0}
+.subject-card{padding:22px 14px;border-radius:16px;text-align:center;cursor:pointer;transition:.2s;color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.1)}
+.subject-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.subject-card.math{background:linear-gradient(135deg,#3b82f6,#1d4ed8)}
+.subject-card.japanese{background:linear-gradient(135deg,#f59e0b,#b45309)}
+.subject-card.english{background:linear-gradient(135deg,#10b981,#047857)}
+.subject-card .icon{font-size:2rem;margin-bottom:6px}.subject-card .label{font-size:1.1rem;font-weight:700}
+.subject-card .sub{font-size:.75rem;opacity:.85;margin-top:3px}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.mode-card{padding:18px 14px;border-radius:14px;text-align:center;cursor:pointer;transition:.2s;border:2px solid #e2e8f0;background:#fff}
+.mode-card:hover{border-color:#818cf8;background:#f5f3ff}.mode-card.disabled{opacity:.4;cursor:not-allowed}
+.mode-card .m-icon{font-size:1.5rem;margin-bottom:4px}.mode-card .m-label{font-size:.95rem;font-weight:700;color:#334155}
+.mode-card .m-sub{font-size:.73rem;color:#64748b;margin-top:3px}
+.cat-filters{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.cat-chip{padding:5px 12px;border-radius:16px;border:1.5px solid #e2e8f0;background:#fff;font-size:.78rem;font-weight:600;cursor:pointer;transition:.2s;color:#64748b}
+.cat-chip:hover{border-color:#818cf8;color:#4f46e5}.cat-chip.active{background:#4f46e5;color:#fff;border-color:#4f46e5}
+.progress-bar-bg{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width .3s}
+.progress-fill.math{background:linear-gradient(90deg,#3b82f6,#2563eb)}
+.progress-fill.japanese{background:linear-gradient(90deg,#f59e0b,#d97706)}
+.progress-fill.english{background:linear-gradient(90deg,#10b981,#059669)}
+.progress-text{text-align:center;font-size:.8rem;color:#64748b;margin-top:4px}
+.q-dots{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.dot{width:30px;height:30px;border-radius:50%;border:2px solid #cbd5e1;background:#fff;font-size:.75rem;font-weight:700;color:#64748b;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center}
+.dot:hover{border-color:#818cf8}.dot.active{background:#3b82f6;color:#fff;border-color:#3b82f6}
+.dot.correct{background:#10b981;color:#fff;border-color:#10b981}.dot.wrong{background:#ef4444;color:#fff;border-color:#ef4444}
+.dot.revealed{background:#fbbf24;color:#fff;border-color:#fbbf24}
+.q-label{display:inline-block;padding:3px 12px;border-radius:16px;font-size:.75rem;font-weight:700;color:#fff;margin-bottom:8px}
+.q-label.math{background:#3b82f6}.q-label.japanese{background:#d97706}.q-label.english{background:#059669}
+.cat-tag{display:inline-block;padding:2px 10px;border-radius:10px;font-size:.72rem;font-weight:600;background:#e2e8f0;color:#475569;margin-left:6px}
+.grade-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.7rem;font-weight:600;background:#ddd6fe;color:#5b21b6;margin-left:4px}
+.q-number{font-size:1.3rem;font-weight:800;margin-bottom:12px;color:#334155}
+.q-text{font-size:1.05rem;line-height:2;white-space:pre-wrap;margin-bottom:8px}
+.q-hint{font-size:.85rem;color:#64748b;margin-top:10px;padding:8px 12px;background:#f8fafc;border-radius:8px;border-left:3px solid #cbd5e1}
+.answer-section{margin-top:20px;padding-top:16px;border-top:2px dashed #e2e8f0}
+.answer-toggle{display:block;width:100%;padding:12px;border:2px solid #e2e8f0;border-radius:10px;background:#f8fafc;color:#475569;font-size:.95rem;font-weight:600;cursor:pointer;transition:.2s;text-align:center}
+.answer-toggle:hover{background:#eef2ff;border-color:#818cf8;color:#4f46e5}
+.answer-box{background:#ecfdf5;border-radius:10px;padding:14px;margin:12px 0}
+.answer-box .alabel{font-size:.75rem;font-weight:700;color:#059669;margin-bottom:2px}
+.answer-box .avalue{font-size:1.15rem;font-weight:800;color:#065f46;white-space:pre-wrap}
+.explanation-box{background:#eff6ff;border-radius:10px;padding:14px;border-left:4px solid #3b82f6;margin:12px 0}
+.explanation-box .elabel{font-size:.75rem;font-weight:700;color:#2563eb;margin-bottom:6px}
+.explanation-box .etext{font-size:.9rem;line-height:1.85;color:#1e3a5f;white-space:pre-wrap}
+.score-buttons{display:flex;gap:12px;margin-top:14px;justify-content:center}
+.score-btn{flex:1;max-width:170px;padding:12px;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s;border:3px solid transparent;text-align:center}
+.score-btn.correct-btn{background:#ecfdf5;color:#059669;border-color:#6ee7b7}.score-btn.correct-btn.selected{background:#059669;color:#fff}
+.score-btn.wrong-btn{background:#fef2f2;color:#dc2626;border-color:#fca5a5}.score-btn.wrong-btn.selected{background:#dc2626;color:#fff}
+.nav-buttons{display:flex;justify-content:space-between;align-items:center;margin:16px 0;gap:10px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:14px 0}
+.stat-card{background:#fff;border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.stat-card .s-value{font-size:1.7rem;font-weight:800}.stat-card .s-label{font-size:.72rem;color:#64748b;margin-top:2px}
+.stat-card.blue .s-value{color:#2563eb}.stat-card.green .s-value{color:#059669}
+.stat-card.red .s-value{color:#dc2626}.stat-card.purple .s-value{color:#7c3aed}
+.cat-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.83rem}
+.cat-table th{background:#f1f5f9;padding:7px 8px;text-align:left;font-weight:700;color:#475569;border-bottom:2px solid #e2e8f0}
+.cat-table td{padding:7px 8px;border-bottom:1px solid #f1f5f9}.cat-table tr:hover{background:#f8fafc}
+.bar-cell{position:relative;min-width:80px}.bar-bg{height:16px;background:#e2e8f0;border-radius:8px;overflow:hidden}
+.bar-inner{height:100%;border-radius:8px;transition:width .3s}.bar-inner.green{background:#10b981}.bar-inner.yellow{background:#f59e0b}.bar-inner.red{background:#ef4444}
+.bar-pct{position:absolute;right:4px;top:50%;transform:translateY(-50%);font-size:.7rem;font-weight:700;color:#334155}
+.weak-badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:.68rem;font-weight:700;background:#fef2f2;color:#dc2626;margin-left:4px}
+.welcome{text-align:center;padding:20px 0}.welcome h2{font-size:1.3rem;margin-bottom:4px;color:#1e293b}
+.welcome p{color:#64748b;font-size:.92rem;margin-bottom:14px}
+.section-title{font-size:1rem;font-weight:700;color:#334155;margin:18px 0 6px;border-left:4px solid #3b82f6;padding-left:10px}
+.daily-badge{display:inline-block;background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:10px;font-size:.72rem;font-weight:700;margin-left:6px}
+.history-day{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:.85rem}
+.history-day .hd-date{font-weight:700;min-width:90px;color:#475569}.history-day .hd-bar{flex:1}
+.streak-display{text-align:center;margin:10px 0}.streak-num{font-size:2.5rem;font-weight:800;color:#f59e0b}
+.streak-label{font-size:.8rem;color:#64748b}
+@media(max-width:600px){.container{padding:10px}.card{padding:16px}.subject-grid{grid-template-columns:1fr}.mode-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="header"><h1>瑛の毎日ドリル</h1><div class="date" id="todayDate"></div></div>
+<div class="tab-bar" id="tabBar"></div>
+<div class="container" id="app"></div>
+<script>
+// ============ 応援メッセージ ============
+const motivMessages=[
+{text:"大谷翔平も毎日の素振りから始まった。瑛の毎日のドリルも、未来のホームランにつながってるよ！",icon:"⚾"},
+{text:"マイクラで最初にダイヤを見つけた時みたいに、勉強も掘り続ければダイヤみたいな発見がある！",icon:"💎"},
+{text:"プロスピで打率を上げるコツは繰り返し練習。勉強も同じ。今日も1打席1打席、全力で！",icon:"🏟️"},
+{text:"英検2級を4年生でクリアした瑛なら、準1級だって絶対いける。今日の1問が合格への1歩！",icon:"🏆"},
+{text:"マイクラのエンダードラゴンも準備と戦略があれば倒せる。受験も同じだ！",icon:"🐉"},
+{text:"イチローは「小さな積み重ねがとんでもない所へ行く唯一の道」と言った。今日も積み重ねよう！",icon:"🌟"},
+{text:"プロスピでSランク選手を育てるにはコツコツが大事。瑛もSランクへ一歩ずつ！",icon:"📈"},
+{text:"マイクラで自分だけの世界を作れるように、勉強で自分だけの未来を作ろう！",icon:"🧱"},
+{text:"三振しても次の打席がある。間違えても大丈夫、弱点克服ドリルで打ち返そう！",icon:"💪"},
+{text:"英語で世界中の人と話せるってすごいこと。準1級の先にもっと広い世界が待ってる！",icon:"🌍"},
+{text:"大谷は二刀流。瑛は算数・国語・英語の三刀流だ！今日も三刀流の力を磨こう！",icon:"⚡"},
+{text:"マイクラのレッドストーン回路みたいに、算数も論理的に考える力がカギ。楽しんでいこう！",icon:"🔧"},
+{text:"WBC決勝のトラウトとの対決を思い出せ。本番で結果を出すには日々の準備がすべて！",icon:"🇯🇵"},
+{text:"エンチャントテーブルで最強装備を作るみたいに、毎日の勉強で知識をエンチャントしよう！",icon:"✨"},
+{text:"Keep going, Ei! Every question you solve today brings you closer to your dream!",icon:"💫"},
+{text:"つるかめ算も旅人算も、コツをつかめばマイクラの建築みたいに楽しくなる！",icon:"⛏️"},
+{text:"プロスピの逆転サヨナラみたいに、受験本番で力を出すには今日の練習が大事！",icon:"🎯"},
+{text:"Yesterday is history, tomorrow is a mystery, today is a gift! 今日も最高の1日にしよう！",icon:"🎁"},
+{text:"ダルビッシュも「練習は裏切らない」と言った。今日の1問は絶対ムダにならない！",icon:"⭐"},
+{text:"Baseball, Minecraft, English — 瑛は何でもチャレンジする最強プレイヤーだ！",icon:"🏅"},
+];
+
+// ============ 大規模問題バンク ============
+const questions={
+math:[
+// 4年 計算
+{id:"m01",g:4,cat:"計算",q:"248 + 376 + 152 を工夫して計算しなさい。",h:"キリのいい組み合わせを探そう。",a:"776",ex:"248+152=400, 400+376=776\n【ポイント】交換法則でキリのいい数を先に作る。"},
+{id:"m02",g:4,cat:"計算",q:"1000 − 387 を計算しなさい。",h:"999−387+1 で考える方法もあるよ。",a:"613",ex:"999−387=612, 612+1=613"},
+{id:"m03",g:4,cat:"計算",q:"25 × 36 を工夫して計算しなさい。",h:"25×4=100 を利用しよう。",a:"900",ex:"25×4×9=100×9=900"},
+{id:"m04",g:4,cat:"計算",q:"72÷8+15×3 を計算しなさい。",h:"×÷を先に計算。",a:"54",ex:"9+45=54。四則混合は×÷→+−の順。"},
+{id:"m05",g:4,cat:"計算",q:"3.5+2.78 を計算しなさい。",h:"小数点をそろえて筆算。",a:"6.28",ex:"3.50+2.78=6.28"},
+// 4年 図形・角度
+{id:"m06",g:4,cat:"角度",q:"三角形の2つの角が45°と70°。残りは？",h:"内角の和=180°",a:"65°",ex:"180−45−70=65°"},
+{id:"m07",g:4,cat:"角度",q:"平行四辺形の1つの角が65°。隣の角は？",h:"隣り合う角の和=180°",a:"115°",ex:"180−65=115°"},
+{id:"m08",g:4,cat:"面積",q:"たて7cm、横12cmの長方形の面積は？",h:"たて×横",a:"84 cm²",ex:"7×12=84 cm²"},
+{id:"m09",g:4,cat:"面積",q:"1辺が9cmの正方形の面積は？",h:"正方形=1辺×1辺",a:"81 cm²",ex:"9×9=81 cm²"},
+// 4年 わり算・小数
+{id:"m10",g:4,cat:"計算",q:"324÷18 を計算しなさい。",h:"18=2×9で2段階に分ける。",a:"18",ex:"324÷2÷9=162÷9=18"},
+{id:"m11",g:4,cat:"小数",q:"0.3×7 = ?",h:"整数で計算→小数点を戻す。",a:"2.1",ex:"3×7=21→2.1"},
+{id:"m12",g:4,cat:"がい数",q:"2847を四捨五入して百の位までのがい数に。",h:"十の位を見る。",a:"2800",ex:"十の位4→切り捨て→2800"},
+// 5年 分数・割合
+{id:"m20",g:5,cat:"計算",q:"3.14×25+3.14×75 を工夫して計算。",h:"共通の3.14をくくり出す。",a:"314",ex:"3.14×(25+75)=3.14×100=314　分配法則。"},
+{id:"m21",g:5,cat:"計算",q:"1/2 + 2/3 + 1/6 を計算しなさい。",h:"最小公倍数で通分。",a:"4/3（1と1/3）",ex:"3/6+4/6+1/6=8/6=4/3"},
+{id:"m22",g:5,cat:"計算",q:"3/4 × 2/5 を計算しなさい。",h:"分子同士・分母同士をかける。",a:"3/10",ex:"6/20=3/10。先に約分すると楽。"},
+{id:"m23",g:5,cat:"計算",q:"5/6 − 1/4 を計算しなさい。",h:"通分してからひき算。",a:"7/12",ex:"10/12−3/12=7/12"},
+{id:"m24",g:5,cat:"割合",q:"定価の2割引きで1600円。定価は？",h:"2割引き=0.8倍",a:"2000円",ex:"1600÷0.8=2000円"},
+{id:"m25",g:5,cat:"割合",q:"500人の56%は何人？",h:"56%=0.56",a:"280人",ex:"500×0.56=280"},
+// 5年 速さ
+{id:"m26",g:5,cat:"速さ",q:"1.2kmを毎分80mで歩くと何分？",h:"1.2km=1200m",a:"15分",ex:"1200÷80=15分"},
+{id:"m27",g:5,cat:"速さ",q:"時速60kmで2時間30分走ると何km？",h:"30分=0.5時間",a:"150km",ex:"60×2.5=150km"},
+// 5年 図形・体積
+{id:"m28",g:5,cat:"図形",q:"半径5cmの円の面積は？（π=3.14）",h:"半径×半径×π",a:"78.5 cm²",ex:"5×5×3.14=78.5 cm²"},
+{id:"m29",g:5,cat:"図形",q:"底辺10cm、高さ6cmの三角形の面積は？",h:"÷2を忘れずに。",a:"30 cm²",ex:"10×6÷2=30 cm²"},
+{id:"m30",g:5,cat:"体積",q:"たて4cm、横5cm、高さ6cmの直方体の体積は？",h:"たて×横×高さ",a:"120 cm³",ex:"4×5×6=120 cm³"},
+// 5年 場合の数・比・規則性
+{id:"m31",g:5,cat:"場合の数",q:"1,2,3,4から2枚で2けたの整数。何通り？",h:"十の位4通り×一の位3通り",a:"12通り",ex:"4×3=12通り（順列）"},
+{id:"m32",g:5,cat:"比",q:"兄:弟=5:3。兄800円のとき弟は？",h:"比の1あたりを求める。",a:"480円",ex:"800÷5=160, 160×3=480円"},
+{id:"m33",g:5,cat:"規則性",q:"1,4,9,16,25,...の10番目は？",h:"N番目=N×N",a:"100",ex:"10×10=100（平方数）"},
+// ★★ 特殊算 ★★
+{id:"m40",g:4,cat:"和差算",q:"2つの数の和が52で、差が8です。大きい方の数はいくつ？",h:"(和+差)÷2 = 大きい方",a:"30",ex:"（52+8）÷2=30\n小さい方 =（52−8）÷2=22\n検算: 30+22=52, 30−22=8 ✓\n\n【和差算の公式】\n大 =（和+差）÷2\n小 =（和−差）÷2\n線分図を描いて考えると理解しやすいよ。"},
+{id:"m41",g:4,cat:"和差算",q:"姉と妹の持っているお金の合計は3200円。姉は妹より600円多い。妹はいくら持っている？",h:"線分図を描いて考えよう。",a:"1300円",ex:"妹 =（3200−600）÷2=1300円\n姉 = 1300+600=1900円\n検算: 1300+1900=3200 ✓"},
+{id:"m42",g:5,cat:"つるかめ算",q:"ツルとカメが合わせて10匹います。足の数の合計が28本のとき、ツルは何羽？",h:"全部カメだったら足は何本？そこからツルに変えていくと…",a:"6羽",ex:"全部カメと仮定：10×4=40本\n実際との差：40−28=12本\n1匹をカメ→ツルに変えると：4−2=2本減る\nツルの数：12÷2=6羽\nカメ：10−6=4匹\n検算：6×2+4×4=12+16=28 ✓\n\n【つるかめ算の解き方】\n①全部片方と仮定 ②差を出す ③1匹入れ替えた時の差で割る"},
+{id:"m43",g:5,cat:"つるかめ算",q:"50円切手と80円切手を合わせて15枚買い、合計900円払いました。50円切手は何枚？",h:"全部50円だったら…？",a:"10枚",ex:"全部50円：15×50=750円\n差：900−750=150円\n1枚80円に変えると：80−50=30円増\n80円切手：150÷30=5枚\n50円切手：15−5=10枚\n検算：10×50+5×80=500+400=900 ✓"},
+{id:"m44",g:4,cat:"植木算",q:"120mの道の片側に、端から端まで6mおきに木を植えます。木は何本必要？",h:"間の数+1 が木の数だよ。",a:"21本",ex:"間の数：120÷6=20\n木の数：20+1=21本\n\n【植木算の3パターン】\n①両端に植える：間の数+1\n②片端だけ：間の数\n③円形：間の数＝木の数"},
+{id:"m45",g:4,cat:"植木算",q:"池のまわりの長さが200mです。5mおきに木を植えると何本必要？",h:"池のまわり（円形）の植木算。",a:"40本",ex:"200÷5=40本\n円形なので「間の数＝木の数」"},
+{id:"m46",g:5,cat:"旅人算",q:"太郎は毎分60m、次郎は毎分40mで同じ方向に同時に出発。太郎が次郎に追いつくには、最初に200m差があったとき何分かかる？",h:"1分あたり差がどれだけ縮まる？",a:"10分",ex:"毎分の差：60−40=20m\n200÷20=10分\n\n【旅人算】\n追いかけ：距離÷速さの差\n出会い：距離÷速さの和"},
+{id:"m47",g:5,cat:"旅人算",q:"AとBが1800m離れた地点から向かい合って同時に出発。Aは毎分70m、Bは毎分50m。何分後に出会う？",h:"1分あたり何m近づく？",a:"15分",ex:"毎分の和：70+50=120m\n1800÷120=15分\n\n出会いの旅人算は「距離÷速さの和」"},
+{id:"m48",g:5,cat:"仕事算",q:"Aは12日、Bは6日で終わる仕事。2人で一緒にやると何日？",h:"1日の仕事量をそれぞれ求めよう。",a:"4日",ex:"Aの1日: 1/12、Bの1日: 1/6\n合計: 1/12+1/6=1/12+2/12=3/12=1/4\n全体÷(1/4)=4日"},
+{id:"m49",g:5,cat:"濃度算",q:"10%の食塩水200gに食塩を何g加えると20%になる？",h:"食塩水全体の重さも変わるよ。",a:"25g",ex:"最初の食塩: 200×0.1=20g\n加えた後: (20+x)÷(200+x)=0.2\n20+x=0.2(200+x)=40+0.2x\n0.8x=20, x=25g\n\n【濃度算のコツ】\n濃度(%)=食塩÷食塩水全体×100\n食塩水全体=水+食塩 を忘れずに。"},
+{id:"m50",g:5,cat:"通過算",q:"長さ120mの列車が時速72kmで走っています。長さ280mの鉄橋を渡り始めてから渡り終わるまで何秒？",h:"列車が進む距離=鉄橋+列車の長さ",a:"20秒",ex:"進む距離: 280+120=400m\n時速72km=秒速20m（72000÷3600）\n400÷20=20秒\n\n【通過算のポイント】\n鉄橋を渡る: 距離=鉄橋+列車\nすれ違い: 距離=列車A+列車B\n時速→秒速: ÷3600×1000（÷3.6）"},
+{id:"m51",g:5,cat:"差集め算",q:"生徒にあめを配ります。1人5個ずつだと20個余り、1人7個ずつだと4個足りない。生徒は何人？",h:"配り方を変えると、全体で何個の差がある？",a:"12人",ex:"差: 20+4=24個（余りと不足は足す）\n1人あたりの差: 7−5=2個\n生徒: 24÷2=12人\n検算: 12×5=60, 60+20=80(あめ), 12×7=84, 84−80=4(不足) ✓"},
+{id:"m52",g:5,cat:"消去算",q:"ノート3冊とペン5本で1050円。ノート3冊とペン2本で750円。ペン1本は？",h:"ノートの数が同じ！引き算で消せる。",a:"100円",ex:"①−②: ペン3本=300円\nペン1本=100円"},
+{id:"m53",g:5,cat:"文章題",q:"兄弟で4500円を分けます。兄は弟の2倍より300円多くもらいます。弟はいくら？",h:"弟を□円として式を作ろう。",a:"1400円",ex:"弟=□, 兄=2×□+300\n□+(2×□+300)=4500\n3×□=4200\n□=1400円\n兄=2×1400+300=3100円"},
+],
+japanese:[
+// 4年
+{id:"j01",g:4,cat:"漢字の読み",q:"読みをひらがなで。\n① 努力 ② 勇気 ③ 季節 ④ 伝説 ⑤ 特別",h:"4年生の漢字。",a:"① どりょく ② ゆうき ③ きせつ ④ でんせつ ⑤ とくべつ",ex:"① がんばること。② 恐れず立ち向かう心。③ 春夏秋冬。④ 語り伝えられた話。⑤ ふつうと違う。"},
+{id:"j02",g:4,cat:"漢字の書き取り",q:"漢字に直せ。\n① 花がサく ② 手紙をオクる ③ ジッケン ④ レキシ ⑤ カンガえる",h:"4年生までの漢字。",a:"① 咲 ② 送 ③ 実験 ④ 歴史 ⑤ 考",ex:"① 花がひらく。② 届ける。③ ためす。④ 過去の記録。⑤ 筋道を立てる。"},
+{id:"j03",g:4,cat:"ことわざ",q:"「急がば回れ」の意味は？\nア 急ぐなら走れ\nイ 急ぐほど安全な道を選べ\nウ 回り道をして遊べ",h:"「回れ」=回り道をしろ",a:"イ",ex:"急ぐときほど確実な方法をとるべき、という教え。"},
+{id:"j04",g:4,cat:"主語・述語",q:"主語と述語を抜き出せ。\n① 赤い花が美しく咲いている。\n② 弟は毎朝ジョギングをする。",h:"「何が」→主語、文末→述語",a:"① 花が / 咲いている\n② 弟は / する",ex:"「赤い」「美しく」「毎朝」「ジョギングを」は修飾語。骨格を見抜こう。"},
+{id:"j05",g:4,cat:"つなぎ言葉",q:"（ ）に入るつなぎ言葉は？\n「雨が降った。（ ）運動会は中止に。」\nア しかし イ だから ウ また エ つまり",h:"原因→結果の関係。",a:"イ（だから）",ex:"順接（だから）=原因→結果。逆接（しかし）=反対。並列（また）=つけ加え。"},
+{id:"j06",g:4,cat:"語句",q:"「頭が上がらない」の意味は？\nア 背が伸びない\nイ 相手に対等に振る舞えない\nウ 頭が痛い",h:"人に対して使う表現。",a:"イ",ex:"弱みや恩があり、対等に振る舞えないこと。慣用句は体の部位を使うものが多い。"},
+{id:"j07",g:4,cat:"四字熟語",q:"「十人十色」の意味は？\nア 10色見える\nイ 人それぞれ違う\nウ 10人で1人分",h:"10人が10通りということは？",a:"イ",ex:"十人十色 = 人はそれぞれ好みや考えが異なる。"},
+// 5年
+{id:"j10",g:5,cat:"漢字の読み",q:"読みをひらがなで。\n① 拝啓 ② 遭遇 ③ 穏やか ④ 賛否 ⑤ 慎重",h:"中学受験頻出。",a:"① はいけい ② そうぐう ③ おだやか ④ さんぴ ⑤ しんちょう",ex:"① 手紙の書き出し。② 思いがけず出会う。③ 静かで落ち着いた。④ 賛成と反対。⑤ 注意深い。"},
+{id:"j11",g:5,cat:"漢字の書き取り",q:"漢字に直せ。\n① シンライ ② チョウジョウ ③ セイジツ ④ ジュンシュ ⑤ シュチョウ",h:"入試頻出の漢字。",a:"① 信頼 ② 頂上 ③ 誠実 ④ 遵守 ⑤ 主張",ex:"① 信じてたよる。② 一番高い所。③ まじめで正直。④ きまりを守る。⑤ 考えを強く言う。"},
+{id:"j12",g:5,cat:"ことわざ",q:"（ ）を埋めよ。\n① 石の上にも（ ）年\n② 猿も（ ）から落ちる\n③（ ）に小判",h:"動物が多い！",a:"① 三 ② 木 ③ 猫",ex:"① 辛抱すれば成果。② 達人でも失敗。③ 価値がわからない者に高価なものは無意味。"},
+{id:"j13",g:5,cat:"敬語",q:"尊敬語にせよ。\n① 先生が来た\n② 先生が言った\n③ 先生が食べた",h:"特別な形の動詞。",a:"① いらっしゃった\n② おっしゃった\n③ 召し上がった",ex:"来る→いらっしゃる、言う→おっしゃる、食べる→召し上がる\n見る→ご覧になる、する→なさる も覚えよう。"},
+{id:"j14",g:5,cat:"四字熟語",q:"（ ）を埋めよ。\n① 一石（ ）鳥 ② 以心（ ）心 ③ 七転八（ ） ④ 一期一（ ）",h:"意味を考えよう。",a:"① 二 ② 伝 ③ 起 ④ 会",ex:"①1つで2つの利益。②言葉なしで通じる。③何度でも立ち上がる。④一度の出会いを大切に。"},
+{id:"j15",g:5,cat:"語句",q:"「途方に暮れる」= ？\nア 日が暮れる\nイ どうしていいかわからなくなる\nウ 迷子になる",h:"途方=方法。",a:"イ",ex:"方法が見つからず困りはてる。字面に引っ張られないように！"},
+{id:"j16",g:5,cat:"文法",q:"品詞名を答えよ。\n①「とても」きれいな花\n②「走る」ことが好き\n③「この」本\n④ 空が「青い」",h:"名詞/動詞/形容詞/副詞/連体詞のどれ？",a:"① 副詞 ② 動詞 ③ 連体詞 ④ 形容詞",ex:"副詞→用言を修飾。連体詞→名詞を修飾(活用なし)。形容詞→「〜い」で終わる。"},
+{id:"j17",g:5,cat:"対義語",q:"対義語を書け。\n① 原因↔（ ） ② 賛成↔（ ） ③ 増加↔（ ） ④ 簡単↔（ ）",h:"漢字1字ずつ考えよう。",a:"① 結果 ② 反対 ③ 減少 ④ 困難",ex:"増↔減、加↔少のように漢字の意味で対を考える。"},
+// ★ 読解・記述 ★
+{id:"j20",g:5,cat:"読解（論説）",q:"次の文を読んで問いに答えよ。\n\n「本を読むということは、ただ文字を目で追うことではない。書かれた言葉の向こう側にある、書いた人の気持ちや考えを想像することである。だからこそ、同じ本を読んでも、人によって感じ方が違うのだ。」\n\n問：筆者が「本を読む」ことで最も大切だと考えていることを30字以内で書け。",h:"「ではない。〜ことである」の構造に注目。",a:"書いた人の気持ちや考えを想像すること。",ex:"否定→肯定の対比構造。筆者の主張は肯定側にある。\n答えは本文の言葉を使って書くのが基本。\n\n【記述のコツ】\n①本文から根拠を探す\n②「〜こと。」で終わるようにまとめる\n③字数制限を守る"},
+{id:"j21",g:5,cat:"読解（物語）",q:"次の文を読んで問いに答えよ。\n\n「健太は教室の窓から、雨の中を走っていく友人の背中を黙って見つめていた。さっき自分が言った一言が、まるで石のように胸の中に沈んでいく。『待ってくれ』——そう言いたいのに、声はのどの奥でつまったまま動かなかった。」\n\n問：この時の健太の気持ちを40字以内で書け。",h:"「石のように胸に沈む」「声がつまる」からどんな気持ち？",a:"（例）自分の言葉で友人を傷つけてしまったことを後悔し、謝りたいが声が出せないもどかしさ。",ex:"心情読解のポイント：\n①比喩表現に注目（「石のように沈む」→重い後悔）\n②行動に注目（「黙って見つめる」→声が出せない）\n③「言いたいのに」→もどかしさ、悔しさ\n\n【入試の心情問題のコツ】\n・「うれしい」「悲しい」だけでなく、なぜそう感じたかの理由も書く\n・本文の表現を根拠にして答える"},
+{id:"j22",g:5,cat:"読解（論説）",q:"次の文を読んで問いに答えよ。\n\n「最近、子どもたちの外遊びの時間が減っている。ある調査では、30年前と比べて平日の外遊び時間が半分以下になったという。その原因として、テレビゲームの普及や塾通いの増加が挙げられる。しかし、外遊びには体力づくりだけでなく、友だちとの関わりを通じてコミュニケーション能力を育てるという大切な役割がある。」\n\n問：筆者は外遊びにどのような役割があると考えていますか。本文から2つ答えなさい。",h:"最後の文に注目。「だけでなく」の前後が2つの役割。",a:"① 体力づくり\n② コミュニケーション能力を育てる",ex:"「Aだけでなく、Bも」→ A と B の2つが答え。\n①体力づくり\n②友だちとの関わりでコミュニケーション能力を育てる\n\n【ポイント】「だけでなく」「のみならず」は2つ以上の要素を並べる表現。入試ではこの構造から複数の答えを求める問題がよく出る。"},
+{id:"j23",g:5,cat:"読解（物語）",q:"次の文を読んで問いに答えよ。\n\n「『あきらめるな。あきらめたらそこで終わりだ。』\n監督の言葉を思い出しながら、美咲は震える足でもう一度走り出した。ゴールまであと200メートル。沿道の声援が、少しずつ大きくなっていく。目の前がにじんで見えた。」\n\n問：「目の前がにじんで見えた」のはなぜか。美咲の気持ちを含めて30字以内で書け。",h:"マラソンで「目がにじむ」のは何のせい？体の状態と気持ちの両方を考えよう。",a:"（例）苦しさに耐えながら懸命に走り、涙があふれたから。",ex:"「にじんで見える」= 涙（感動、苦しさ、悔しさなど）\n美咲の状況：震える足＋監督の言葉＋声援→苦しいけれど諦めない\n\n感情は「苦しさ＋頑張りたい気持ち＋感動」が混じっている。\n\n【入試のポイント】\n比喩的表現の理由を問う問題では：\n①直前・直後の描写をヒントにする\n②登場人物の状況を整理する\n③「なぜそうなったか」を因果関係で書く"},
+],
+english:[
+// Vocabulary
+{id:"e01",g:5,cat:"Vocabulary",q:"Choose the best word.\n\n\"The scientist made a groundbreaking (     ) that changed our understanding of the universe.\"\n\n(A) discovery (B) recovery (C) delivery (D) coverage",h:"Scientists find something new = ?",a:"(A) discovery",ex:"discovery = 発見。groundbreaking = 画期的な\n(B) recovery=回復 (C) delivery=配達 (D) coverage=報道\n\n【準1級】groundbreaking は頻出形容詞。類: revolutionary, innovative"},
+{id:"e02",g:5,cat:"Vocabulary",q:"\"Despite the heavy rain, the runners showed great (     ) and finished the race.\"\n\n(A) patience (B) perseverance (C) preference (D) performance",h:"They kept going through tough conditions.",a:"(B) perseverance",ex:"perseverance = 忍耐力、粘り強さ\n(A) patience=忍耐(待つ力) (C) preference=好み (D) performance=成果\n\npersevere(動詞)の名詞形。準1級長文頻出。"},
+{id:"e03",g:5,cat:"Vocabulary",q:"\"The new policy has had a significant (     ) on the local economy.\"\n\n(A) impact (B) import (C) impulse (D) imprint",h:"= effect",a:"(A) impact",ex:"have an impact on ~ = ～に影響を与える。準1級超頻出コロケーション。"},
+{id:"e04",g:5,cat:"Vocabulary",q:"\"The company decided to (     ) its operations to Southeast Asia.\"\n\n(A) relocate (B) renovate (C) regulate (D) reinforce",h:"They moved their business.",a:"(A) relocate",ex:"relocate=移転する(re+locate)。(B)renovate=改装 (C)regulate=規制 (D)reinforce=強化\n\n接頭辞 re-=「再び」で意味を推測しよう。"},
+{id:"e05",g:5,cat:"Vocabulary",q:"\"The charity is dedicated to (     ) poverty in developing countries.\"\n\n(A) eliminating (B) illustrating (C) accelerating (D) accommodating",h:"The charity wants to END poverty.",a:"(A) eliminating",ex:"eliminate = 根絶する。be dedicated to + -ing = ～に専念する。"},
+{id:"e06",g:5,cat:"Vocabulary",q:"\"The athlete's remarkable (     ) from injury surprised everyone.\"\n\n(A) discovery (B) recovery (C) delivery (D) memory",h:"Got better after being hurt.",a:"(B) recovery",ex:"recovery=回復。make a recovery=回復する。野球でもケガからの recovery は大事だね！"},
+{id:"e07",g:5,cat:"Vocabulary",q:"\"Parents should (     ) their children to think independently.\"\n\n(A) discourage (B) encourage (C) enforce (D) endure",h:"Positive action to help kids.",a:"(B) encourage",ex:"encourage A to do = Aに～するよう促す。(A) discourage=反意語 (C) enforce=強制 (D) endure=耐える"},
+// Reading
+{id:"e10",g:5,cat:"Reading",q:"Read the passage.\n\n\"Bees play a crucial role in our ecosystem. They pollinate approximately 75% of flowering plants and about 35% of food crops. Without bees, many fruits and vegetables would become scarce. However, bee populations have been declining rapidly due to pesticide use and habitat loss.\"\n\nWhat is the main concern?\n(A) Bees are dangerous.\n(B) Bee decline threatens food supply.\n(C) We should eat more vegetables.\n(D) Pesticides help farming.",h:"What's the problem described?",a:"(B)",ex:"ハチ減少→食糧供給への脅威。\nKey: crucial=重要, pollinate=受粉, scarce=不足, decline=減少, pesticide=農薬, habitat loss=生息地喪失"},
+{id:"e11",g:5,cat:"Reading",q:"Read the passage.\n\n\"AI is transforming how we work and live. While AI offers benefits like automating repetitive tasks and improving medical diagnoses, it also raises concerns about job displacement and privacy. Striking the right balance between innovation and regulation will be a defining challenge.\"\n\nMain point?\n(A) AI should be banned.\n(B) AI has only positive effects.\n(C) Balancing AI benefits and risks is key.\n(D) Regulations prevent innovation.",h:"Both good and bad → what's the conclusion?",a:"(C)",ex:"著者は利点とリスクのバランスが重要と主張。\nKey: tremendous=巨大, automate=自動化, displacement=排除, striking a balance=バランスをとる\n\n極端な選択肢(A)(B)は通常不正解。"},
+{id:"e12",g:5,cat:"Reading",q:"Read the passage.\n\n\"The concept of 'digital detox' has gained popularity. Research suggests excessive screen time can lead to sleep disorders, anxiety, and reduced social skills. Many experts recommend setting 'device-free' hours daily.\"\n\nWhat does the passage suggest?\n(A) Stop using phones completely.\n(B) Technology has no negative effects.\n(C) Taking breaks from devices can be beneficial.\n(D) Children need more technology.",h:"What do experts recommend?",a:"(C)",ex:"デジタルデトックスが有益。\nKey: deliberately=意図的に, excessive=過度の, disorder=障害, beneficial=有益\n\n極端な(A)は不正解。suggest/imply問題は穏当な選択肢を選ぶ。"},
+// Grammar
+{id:"e15",g:5,cat:"Grammar",q:"\"If I (     ) enough money, I would travel around the world.\"\n(A) have (B) had (C) will have (D) having",h:"Hypothetical — not real.",a:"(B) had",ex:"仮定法過去: If + 過去形, would + 原形\n「もしお金があったら旅行するのに」→実際にはない\n\n仮定法は準1級必須！"},
+{id:"e16",g:5,cat:"Grammar",q:"\"Not only (     ) the exam, but she also got the highest score.\"\n(A) she passed (B) did she pass (C) she did pass (D) passed she",h:"Not only at the start → what happens?",a:"(B) did she pass",ex:"Not only + 倒置（助動詞+主語）\nNot only did she pass...\n\n否定語句が文頭→倒置。Never have I..., Hardly had S V when... も覚えよう。"},
+{id:"e17",g:5,cat:"Grammar",q:"\"(     ) the weather, the outdoor concert was a success.\"\n(A) Despite (B) Although (C) Because of (D) However",h:"Bad weather BUT good concert. Before a noun = ?",a:"(A) Despite",ex:"Despite + 名詞 = ～にもかかわらず\nAlthough + S+V（節）\n\nこの使い分けは準1級頻出！"},
+{id:"e18",g:5,cat:"Grammar",q:"\"The report (     ) by the time the meeting starts tomorrow.\"\n(A) will finish (B) will be finished (C) will have been finished (D) finishes",h:"Completed BEFORE a future event + passive.",a:"(C) will have been finished",ex:"未来完了受動態: will have been + 過去分詞\n「会議が始まるまでに完成しているだろう」"},
+// Idioms
+{id:"e20",g:5,cat:"Idioms",q:"\"The new employee really hit the ground running.\"\nMeaning?\n(A) She fell down.\n(B) She started working effectively right away.\n(C) She was nervous.\n(D) She ran away.",h:"Positive expression. Start quickly.",a:"(B)",ex:"hit the ground running = 最初から全力で活躍する。直訳ではなく比喩。"},
+{id:"e21",g:5,cat:"Idioms",q:"\"After months of negotiation, the two companies finally saw eye to eye.\"\nMeaning?\n(A) Looked at each other angrily.\n(B) Reached an agreement.\n(C) Competed.\n(D) Ignored each other.",h:"Eye to eye = same viewpoint.",a:"(B)",ex:"see eye to eye = 意見が一致する。don't see eye to eye = 意見が合わない も頻出。"},
+// Error Correction
+{id:"e25",g:5,cat:"Error Correction",q:"Find the error:\n\"The number of tourists visiting Japan have increased significantly.\"",h:"What's the subject — 'number' or 'tourists'?",a:"have → has",ex:"主語 The number (単数) → has\nThe number of ~ = ～の数（単数 → has/is）\nA number of ~ = たくさんの（複数 → have/are）\n超頻出！"},
+{id:"e26",g:5,cat:"Error Correction",q:"Find the error:\n\"She suggested him to apply for the scholarship.\"",h:"Does 'suggest' take 'to + verb'?",a:"suggested him to apply → suggested that he (should) apply",ex:"suggest + that + S + (should) + 原形\nto不定詞は使えない！\n\nsuggest/recommend/insist/demand はこのパターン（仮定法現在）。"},
+// Summary (新形式)
+{id:"e30",g:5,cat:"Summary（要約）",q:"Read the passage and write a summary in 2-3 sentences.\n\n\"Urban gardens are becoming increasingly popular in major cities worldwide. These green spaces provide multiple benefits: they supply fresh produce to local communities, reduce the urban heat island effect, and create gathering places that strengthen neighborhood bonds. Studies have shown that residents living near community gardens report lower stress levels and higher life satisfaction compared to those without access to such spaces.\"",h:"What are urban gardens, what benefits do they provide, and what do studies show?",a:"(Example) Urban gardens are growing in popularity in cities around the world. They provide fresh food, lower temperatures, and build community connections. Research also shows that people living near these gardens experience less stress and greater satisfaction with life.",ex:"【要約のコツ（英検準1級新形式）】\n①トピックセンテンス: 何についての文章か\n②主な詳細: 重要なポイントを2-3つ\n③自分の言葉で言い換える（パラフレーズ）\n\n本文: provide multiple benefits → 要約: provide fresh food, lower temperatures, build connections\n本文: lower stress, higher life satisfaction → 要約: less stress, greater satisfaction\n\nそのままコピーせず、言い換えることが大切！"},
+]
+};
+
+// ============ 状態管理（localStorage使用） ============
+const STORAGE_KEY='ei_drill_v3';
+function loadState(){try{const s=localStorage.getItem(STORAGE_KEY);return s?JSON.parse(s):null}catch(e){return null}}
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({history:S.history,dailyLog:S.dailyLog,streak:S.streak,lastDate:S.lastDate}))}catch(e){}}
+
+const saved=loadState();
+const S={
+  view:'home',subject:null,mode:null,catFilter:'all',
+  quizQs:[],idx:0,revealed:{},scores:{},
+  history:saved?saved.history:{},
+  dailyLog:saved?saved.dailyLog:{},
+  streak:saved?saved.streak:0,
+  lastDate:saved?saved.lastDate:''
+};
+
+// Update streak
+const todayKey=new Date().toISOString().slice(0,10);
+if(S.lastDate&&S.lastDate!==todayKey){
+  const ld=new Date(S.lastDate),td=new Date(todayKey);
+  const diff=Math.floor((td-ld)/(1000*60*60*24));
+  if(diff>1)S.streak=0;
+}
+
+const app=document.getElementById('app'),tabBar=document.getElementById('tabBar');
+const today=new Date();
+document.getElementById('todayDate').textContent=`${today.getFullYear()}年${today.getMonth()+1}月${today.getDate()}日（${'日月火水木金土'[today.getDay()]}）`;
+
+// ============ ユーティリティ ============
+function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
+function seededRandom(seed){let s=seed;return function(){s=(s*16807+0)%2147483647;return(s-1)/2147483646}}
+function getDayNumber(){return Math.floor(Date.now()/(1000*60*60*24))}
+function shuffle(a,rng){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor((rng?rng():Math.random())*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+function getWeakQs(s){return questions[s].filter(q=>{const h=S.history[q.id];return h&&h.wrong>0&&h.lastResult==='wrong'})}
+function getCatStats(s){const c={};questions[s].forEach(q=>{if(!c[q.cat])c[q.cat]={total:0,correct:0,wrong:0};c[q.cat].total++;const h=S.history[q.id];if(h){c[q.cat].correct+=h.correct;c[q.cat].wrong+=h.wrong}});return c}
+function getStats(s){let t=0,a=0,cc=0,wc=0,ta=0;questions[s].forEach(q=>{t++;const h=S.history[q.id];if(h){a++;cc+=h.correct;wc+=h.wrong;ta+=h.attempts}});return{total:t,attempted:a,cc,wc,ta,acc:ta>0?Math.round(cc/ta*100):0}}
+function subLabel(s){return{math:'算数',japanese:'国語',english:'英語'}[s]}
+function getDailyMsg(){const d=getDayNumber();return motivMessages[d%motivMessages.length]}
+
+// 今日のドリル問題を日付シードで選出
+function getDailyQuestions(subject,count){
+  const rng=seededRandom(getDayNumber()*7+(subject==='math'?1:subject==='japanese'?2:3));
+  return shuffle(questions[subject],rng).slice(0,count);
+}
+
+// ============ タブ ============
+function renderTabs(){
+  tabBar.innerHTML=['home','dashboard'].map((v,i)=>{
+    const labels=['🏠 ホーム','📊 ダッシュボード'];
+    const isActive=(v==='home'&&S.view!=='dashboard')||(v==='dashboard'&&S.view==='dashboard');
+    return`<div class="tab${isActive?' active':''}" onclick="navigate('${v}')">${labels[i]}</div>`;
+  }).join('');
+}
+function navigate(v){S.view=v==='dashboard'?'dashboard':'home';S.subject=null;S.mode=null;render();window.scrollTo(0,0)}
+
+// ============ レンダー ============
+function render(){renderTabs();({home:renderHome,subjectMenu:renderSubMenu,quiz:renderQuiz,finish:renderFinish,reviewAll:renderReview,dashboard:renderDash}[S.view]||renderHome)()}
+
+function renderHome(){
+  const msg=getDailyMsg();
+  const subs=['math','japanese','english'];
+  const tA=subs.reduce((s,k)=>s+getStats(k).ta,0),tC=subs.reduce((s,k)=>s+getStats(k).cc,0);
+  const tW=subs.reduce((s,k)=>s+getWeakQs(k).length,0);
+  let statsH='';
+  if(tA>0)statsH=`<div class="section-title">これまでの成績</div><div class="stats-grid">
+    <div class="stat-card blue"><div class="s-value">${tA}</div><div class="s-label">総解答数</div></div>
+    <div class="stat-card green"><div class="s-value">${Math.round(tC/tA*100)}%</div><div class="s-label">正答率</div></div>
+    <div class="stat-card purple"><div class="s-value">${S.streak}</div><div class="s-label">連続日数🔥</div></div>
+    <div class="stat-card red"><div class="s-value">${tW}</div><div class="s-label">要復習</div></div></div>`;
+  app.innerHTML=`
+    <div class="motiv-banner"><div class="motiv-name">瑛へ — 今日のメッセージ</div><div class="motiv-text">${esc(msg.text)}</div><div class="motiv-icon">${msg.icon}</div></div>
+    <div class="welcome"><h2>今日もがんばろう！</h2><p>科目を選んでドリルを始めよう</p></div>
+    <div class="subject-grid">
+      <div class="subject-card math" onclick="selectSubject('math')"><div class="icon">📐</div><div class="label">算数</div><div class="sub">特殊算含む${questions.math.length}問</div></div>
+      <div class="subject-card japanese" onclick="selectSubject('japanese')"><div class="icon">📖</div><div class="label">国語</div><div class="sub">記述式・読解${questions.japanese.length}問</div></div>
+      <div class="subject-card english" onclick="selectSubject('english')"><div class="icon">🌍</div><div class="label">英語</div><div class="sub">準1級${questions.english.length}問</div></div>
+    </div>
+    <div class="section-title">📅 今日のドリル（日替わり各10問）</div>
+    <div class="mode-grid">
+      <div class="mode-card" onclick="startDaily('math')"><div class="m-icon">📐</div><div class="m-label">今日の算数</div><div class="m-sub">10問・日替わり</div></div>
+      <div class="mode-card" onclick="startDaily('japanese')"><div class="m-icon">📖</div><div class="m-label">今日の国語</div><div class="m-sub">10問・日替わり</div></div>
+      <div class="mode-card" onclick="startDaily('english')"><div class="m-icon">🌍</div><div class="m-label">今日の英語</div><div class="m-sub">10問・日替わり</div></div>
+      <div class="mode-card ${tW===0?'disabled':''}" onclick="${tW>0?"startAllWeak()":"void(0)"}"><div class="m-icon">🔄</div><div class="m-label">弱点まとめ</div><div class="m-sub">${tW>0?tW+'問':'なし'}</div></div>
+    </div>${statsH}`;
+}
+
+function selectSubject(s){S.subject=s;S.view='subjectMenu';S.catFilter='all';render()}
+function renderSubMenu(){
+  const s=S.subject,wc=getWeakQs(s).length,cats=[...new Set(questions[s].map(q=>q.cat))];
+  const filtered=getFilteredQs();
+  app.innerHTML=`
+    <div style="text-align:center;margin:16px 0"><span class="q-label ${s}" style="font-size:1rem;padding:6px 20px">${subLabel(s)}</span></div>
+    <div class="mode-grid">
+      <div class="mode-card" onclick="startDaily('${s}')"><div class="m-icon">📅</div><div class="m-label">今日のドリル</div><div class="m-sub">日替わり10問</div></div>
+      <div class="mode-card ${wc===0?'disabled':''}" onclick="${wc>0?`startWeak('${s}')`:"void(0)"}"><div class="m-icon">🔄</div><div class="m-label">弱点克服</div><div class="m-sub">${wc>0?wc+'問':'なし'}</div></div>
+    </div>
+    <div class="card">
+      <div class="section-title" style="margin-top:0">分野で絞り込み</div>
+      <div class="cat-filters">
+        <div class="cat-chip ${S.catFilter==='all'?'active':''}" onclick="setCat('all')">すべて</div>
+        ${cats.map(c=>`<div class="cat-chip ${S.catFilter===c?'active':''}" onclick="setCat('${c}')">${c}</div>`).join('')}
+      </div>
+      <div style="text-align:center;margin-top:14px">
+        <button class="btn btn-primary" onclick="startFiltered()" ${filtered.length===0?'disabled':''}>出題する（${filtered.length}問）</button>
+      </div>
+    </div>
+    <div style="text-align:center;margin:14px 0"><button class="btn btn-outline" onclick="navigate('home')">← 戻る</button></div>`;
+}
+function setCat(c){S.catFilter=c;renderSubMenu()}
+function getFilteredQs(){let qs=questions[S.subject];if(S.catFilter!=='all')qs=qs.filter(q=>q.cat===S.catFilter);return qs}
+
+function startDaily(s){S.subject=s;S.mode='daily';S.quizQs=getDailyQuestions(s,10);S.idx=0;S.revealed={};S.scores={};S.view='quiz';render();window.scrollTo(0,0)}
+function startFiltered(){const qs=getFilteredQs();if(!qs.length)return;S.mode='normal';S.quizQs=shuffle(qs);S.idx=0;S.revealed={};S.scores={};S.view='quiz';render();window.scrollTo(0,0)}
+function startWeak(s){const w=getWeakQs(s);if(!w.length)return;S.subject=s;S.mode='weak';S.quizQs=shuffle(w);S.idx=0;S.revealed={};S.scores={};S.view='quiz';render();window.scrollTo(0,0)}
+function startAllWeak(){const all=['math','japanese','english'].flatMap(s=>getWeakQs(s));if(!all.length)return;S.subject='math';S.mode='weak';S.quizQs=shuffle(all);S.idx=0;S.revealed={};S.scores={};S.view='quiz';render();window.scrollTo(0,0)}
+
+// ============ クイズ ============
+function renderQuiz(){
+  const qs=S.quizQs,q=qs[S.idx],total=qs.length;
+  const cls=S.subject,label=subLabel(S.subject);
+  const isRev=S.revealed[q.id],score=S.scores[q.id];
+  const pct=((S.idx+1)/total)*100;
+  let dots='';for(let i=0;i<total;i++){const qi=qs[i],sc=S.scores[qi.id];const dc=i===S.idx?' active':sc==='correct'?' correct':sc==='wrong'?' wrong':S.revealed[qi.id]?' revealed':'';dots+=`<div class="dot${dc}" onclick="goTo(${i})">${i+1}</div>`}
+  let ansH='';
+  if(isRev){ansH=`<div style="margin-top:14px;animation:fadeIn .25s ease">
+    <div class="answer-box"><div class="alabel">答え / Answer</div><div class="avalue">${esc(q.a)}</div></div>
+    <div class="explanation-box"><div class="elabel">解説 / Explanation</div><div class="etext">${esc(q.ex)}</div></div>
+    <div style="text-align:center;margin-top:12px;font-size:.88rem;color:#475569;font-weight:600">自分の答えは？</div>
+    <div class="score-buttons">
+      <div class="score-btn correct-btn${score==='correct'?' selected':''}" onclick="mark('${q.id}','correct')">⭕ 正解</div>
+      <div class="score-btn wrong-btn${score==='wrong'?' selected':''}" onclick="mark('${q.id}','wrong')">❌ 不正解</div>
+    </div></div>`}
+  const modeLabel=S.mode==='daily'?'📅 今日のドリル — ':S.mode==='weak'?'🔄 弱点克服 — ':'';
+  app.innerHTML=`
+    <div style="margin:10px 0"><div class="progress-bar-bg"><div class="progress-fill ${cls}" style="width:${pct}%"></div></div>
+    <div class="progress-text">${modeLabel}${label} ${S.idx+1}/${total}</div></div>
+    <div class="q-dots">${dots}</div>
+    <div class="card">
+      <div><span class="q-label ${cls}">${label}</span><span class="cat-tag">${esc(q.cat)}</span>${q.g?`<span class="grade-tag">${q.g}年</span>`:''}</div>
+      <div class="q-number">第${S.idx+1}問</div>
+      <div class="q-text">${esc(q.q)}</div>
+      ${q.h?`<div class="q-hint">💡 ${esc(q.h)}</div>`:''}
+      <div class="answer-section">
+        <button class="answer-toggle" onclick="reveal('${q.id}')" ${isRev?'style="background:#ecfdf5;border-color:#6ee7b7;color:#065f46"':''}>${isRev?'✅ 表示中':'📝 答え合わせ'}</button>${ansH}
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-outline" onclick="goTo(${S.idx-1})" ${S.idx===0?'disabled':''}>◀ 前へ</button>
+      ${S.idx===total-1?`<button class="btn btn-success" onclick="finish()">結果 ▶</button>`:`<button class="btn btn-primary" onclick="goTo(${S.idx+1})">次へ ▶</button>`}
+    </div>`}
+function goTo(i){if(i<0||i>=S.quizQs.length)return;S.idx=i;renderQuiz();window.scrollTo(0,0)}
+function reveal(id){S.revealed[id]=true;renderQuiz()}
+function mark(id,r){
+  S.scores[id]=r;
+  if(!S.history[id])S.history[id]={attempts:0,correct:0,wrong:0,lastResult:null};
+  const h=S.history[id],ck=id+'_c',prev=S.scores[ck];
+  if(!prev){h.attempts++;h[r]++;S.scores[ck]=r}else if(prev!==r){h[prev]--;h[r]++;S.scores[ck]=r}
+  h.lastResult=r;
+  // Update daily log
+  if(!S.dailyLog[todayKey])S.dailyLog[todayKey]={correct:0,wrong:0,total:0};
+  S.dailyLog[todayKey].total=Object.keys(S.scores).filter(k=>!k.endsWith('_c')&&S.scores[k]).length;
+  S.dailyLog[todayKey].correct=Object.keys(S.scores).filter(k=>!k.endsWith('_c')&&S.scores[k]==='correct').length;
+  S.dailyLog[todayKey].wrong=Object.keys(S.scores).filter(k=>!k.endsWith('_c')&&S.scores[k]==='wrong').length;
+  if(S.lastDate!==todayKey){if(!S.lastDate||Math.floor((new Date(todayKey)-new Date(S.lastDate))/(1000*60*60*24))<=1)S.streak++;else S.streak=1;S.lastDate=todayKey}
+  saveState();renderQuiz()}
+
+// ============ 結果 ============
+function finish(){S.view='finish';render();window.scrollTo(0,0)}
+function renderFinish(){
+  const qs=S.quizQs,total=qs.length;let c=0,w=0,u=0;
+  qs.forEach(q=>{if(S.scores[q.id]==='correct')c++;else if(S.scores[q.id]==='wrong')w++;else u++});
+  const pct=total>0?Math.round(c/total*100):0;
+  let emoji='🎉',msg='すばらしい！';if(pct<50){emoji='💪';msg='次はもっとできるよ！'}else if(pct<80){emoji='👍';msg='がんばった！'}
+  app.innerHTML=`<div class="card" style="text-align:center;padding:32px 20px">
+    <div style="font-size:3rem;margin-bottom:10px">${emoji}</div>
+    <h2 style="font-size:1.3rem;margin-bottom:6px">${subLabel(S.subject)}ドリル完了！</h2>
+    <p style="color:#64748b;margin-bottom:16px">${msg}</p>
+    <div class="stats-grid" style="max-width:380px;margin:0 auto">
+      <div class="stat-card green"><div class="s-value">${c}</div><div class="s-label">正解</div></div>
+      <div class="stat-card red"><div class="s-value">${w}</div><div class="s-label">不正解</div></div>
+      <div class="stat-card blue"><div class="s-value">${pct}%</div><div class="s-label">正答率</div></div>
+      <div class="stat-card purple"><div class="s-value">${S.streak}🔥</div><div class="s-label">連続日数</div></div>
+    </div>
+    ${w>0?`<p style="margin-top:14px;color:#dc2626;font-weight:600">間違えた${w}問は弱点克服ドリルで復習しよう！</p>`:''}
+    <div style="margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="navigate('home')">トップ</button>
+      <button class="btn btn-outline" onclick="showReview()">全問解説</button>
+      ${w>0?`<button class="btn btn-danger" onclick="retryWrong()">間違いやり直し</button>`:''}
+    </div></div>`}
+function retryWrong(){const wqs=S.quizQs.filter(q=>S.scores[q.id]==='wrong');if(!wqs.length)return;S.mode='weak';S.quizQs=shuffle(wqs);S.idx=0;S.revealed={};S.scores={};S.view='quiz';render();window.scrollTo(0,0)}
+function showReview(){S.view='reviewAll';render();window.scrollTo(0,0)}
+function renderReview(){
+  const qs=S.quizQs,cls=S.subject,label=subLabel(S.subject);
+  let h=`<h2 style="text-align:center;margin:14px 0;color:#334155">${label} — 全問解説</h2>`;
+  qs.forEach((q,i)=>{const sc=S.scores[q.id];const badge=sc==='correct'?'⭕':sc==='wrong'?'❌':'−';
+    h+=`<div class="card"><div><span class="q-label ${cls}">${label}</span><span class="cat-tag">${esc(q.cat)}</span>${q.g?`<span class="grade-tag">${q.g}年</span>`:''} <b>${badge}</b></div>
+    <div class="q-number">第${i+1}問</div><div class="q-text">${esc(q.q)}</div>
+    <div style="margin-top:10px;padding-top:10px;border-top:2px dashed #e2e8f0">
+      <div class="answer-box"><div class="alabel">答え</div><div class="avalue">${esc(q.a)}</div></div>
+      <div class="explanation-box"><div class="elabel">解説</div><div class="etext">${esc(q.ex)}</div></div></div></div>`});
+  h+=`<div style="text-align:center;margin:18px 0"><button class="btn btn-primary" onclick="navigate('home')">トップ</button></div>`;
+  app.innerHTML=h}
+
+// ============ ダッシュボード ============
+function renderDash(){
+  const subs=['math','japanese','english'],labels={math:'算数',japanese:'国語',english:'英語'};
+  let h=`<div class="welcome"><h2>📊 瑛のパフォーマンス</h2><p>お父さんもここで学習状況を確認できます</p></div>`;
+  // Streak
+  h+=`<div class="card" style="text-align:center"><div class="streak-num">${S.streak}</div><div class="streak-label">日連続ドリル達成 🔥</div></div>`;
+  // 過去7日の学習履歴
+  h+=`<div class="section-title">過去7日間の学習</div><div class="card">`;
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);const dk=d.toISOString().slice(0,10);
+    const dl=S.dailyLog[dk];
+    const label2=`${d.getMonth()+1}/${d.getDate()}（${'日月火水木金土'[d.getDay()]}）`;
+    if(dl){
+      const pct=dl.total>0?Math.round(dl.correct/dl.total*100):0;const bc=pct>=80?'green':pct>=50?'yellow':'red';
+      h+=`<div class="history-day"><span class="hd-date">${label2}</span><div class="hd-bar"><div class="bar-bg"><div class="bar-inner ${bc}" style="width:${pct}%"></div></div></div><span style="font-size:.8rem;font-weight:600;min-width:80px;text-align:right">${dl.correct}/${dl.total} (${pct}%)</span></div>`;
+    }else{
+      h+=`<div class="history-day"><span class="hd-date">${label2}</span><span style="color:#94a3b8;font-size:.82rem">未学習</span></div>`;
+    }
+  }
+  h+=`</div>`;
+  // 科目別詳細
+  subs.forEach(s=>{
+    const st=getStats(s),cs=getCatStats(s),wc=getWeakQs(s).length;
+    h+=`<div class="section-title">${labels[s]}</div>
+      <div class="stats-grid">
+        <div class="stat-card blue"><div class="s-value">${st.ta}</div><div class="s-label">解答数</div></div>
+        <div class="stat-card green"><div class="s-value">${st.acc}%</div><div class="s-label">正答率</div></div>
+        <div class="stat-card purple"><div class="s-value">${st.attempted}/${st.total}</div><div class="s-label">挑戦済</div></div>
+        <div class="stat-card red"><div class="s-value">${wc}</div><div class="s-label">要復習</div></div>
+      </div>
+      <div class="card" style="overflow-x:auto"><table class="cat-table"><thead><tr><th>分野</th><th>問題数</th><th>正解</th><th>不正解</th><th>正答率</th></tr></thead><tbody>`;
+    Object.keys(cs).forEach(cat=>{const c=cs[cat],ta=c.correct+c.wrong,p=ta>0?Math.round(c.correct/ta*100):0;const bc=p>=80?'green':p>=50?'yellow':'red';const isW=p<60&&ta>0;
+      h+=`<tr><td>${cat}${isW?'<span class="weak-badge">弱点</span>':''}</td><td>${c.total}</td><td style="color:#059669;font-weight:600">${c.correct}</td><td style="color:#dc2626;font-weight:600">${c.wrong}</td><td class="bar-cell"><div class="bar-bg"><div class="bar-inner ${bc}" style="width:${p}%"></div></div><span class="bar-pct">${ta>0?p+'%':'−'}</span></td></tr>`});
+    h+=`</tbody></table></div>`;
+  });
+  h+=`<div style="text-align:center;margin:18px 0"><button class="btn btn-primary" onclick="navigate('home')">ドリルを始める</button></div>`;
+  app.innerHTML=h}
+
+// 初期表示
+render();
+</script>
+</body>
+</html>
