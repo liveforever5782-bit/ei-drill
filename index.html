@@ -95,7 +95,21 @@ body{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu 
 .history-day .hd-date{font-weight:700;min-width:90px;color:#475569}.history-day .hd-bar{flex:1}
 .streak-display{text-align:center;margin:10px 0}.streak-num{font-size:2.5rem;font-weight:800;color:#f59e0b}
 .streak-label{font-size:.8rem;color:#64748b}
-@media(max-width:600px){.container{padding:10px}.card{padding:16px}.subject-grid{grid-template-columns:1fr}.mode-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}}
+.kanji-block{margin-top:14px;display:flex;flex-direction:column;gap:14px}
+.kanji-card{background:#fffbeb;border:2px solid #fcd34d;border-radius:14px;padding:14px;display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.kanji-svg-wrap{flex-shrink:0;width:130px;height:130px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:6px;position:relative}
+.kanji-svg-wrap svg{width:100%;height:100%}
+.kanji-svg-wrap svg path{stroke:#1e293b;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.kanji-svg-wrap svg g[id*="StrokeNumbers"] text{visibility:visible!important;fill:#dc2626!important;font-size:8px!important;font-weight:bold;font-family:sans-serif}
+.kanji-svg-wrap .loading{color:#94a3b8;font-size:.7rem}
+.kanji-info{flex:1;min-width:180px;font-size:.88rem;line-height:1.7}
+.kanji-info .kmean{font-weight:700;color:#78350f;font-size:.95rem;margin-bottom:6px}
+.kanji-info .krow{margin:3px 0;color:#334155}
+.kanji-info .krow b{display:inline-block;min-width:28px;color:#b45309;font-size:.78rem;background:#fef3c7;padding:1px 6px;border-radius:6px;margin-right:6px}
+.kanji-info .kwords{margin-top:6px;padding-top:6px;border-top:1px dashed #fcd34d}
+.kanji-info .kword{display:inline-block;background:#fff;border:1px solid #fcd34d;padding:2px 8px;border-radius:6px;margin:3px 4px 0 0;font-size:.82rem;color:#78350f}
+.kanji-info .kword small{color:#a16207;font-weight:600;margin-left:3px}
+@media(max-width:600px){.container{padding:10px}.card{padding:16px}.subject-grid{grid-template-columns:1fr}.mode-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}.kanji-svg-wrap{width:110px;height:110px}}
 </style>
 </head>
 <body>
@@ -202,6 +216,69 @@ japanese:[
 {id:"j21",g:5,cat:"読解（物語）",q:"次の文を読んで問いに答えよ。\n\n「健太は教室の窓から、雨の中を走っていく友人の背中を黙って見つめていた。さっき自分が言った一言が、まるで石のように胸の中に沈んでいく。『待ってくれ』——そう言いたいのに、声はのどの奥でつまったまま動かなかった。」\n\n問：この時の健太の気持ちを40字以内で書け。",h:"「石のように胸に沈む」「声がつまる」からどんな気持ち？",a:"（例）自分の言葉で友人を傷つけてしまったことを後悔し、謝りたいが声が出せないもどかしさ。",ex:"心情読解のポイント：\n①比喩表現に注目（「石のように沈む」→重い後悔）\n②行動に注目（「黙って見つめる」→声が出せない）\n③「言いたいのに」→もどかしさ、悔しさ\n\n【入試の心情問題のコツ】\n・「うれしい」「悲しい」だけでなく、なぜそう感じたかの理由も書く\n・本文の表現を根拠にして答える"},
 {id:"j22",g:5,cat:"読解（論説）",q:"次の文を読んで問いに答えよ。\n\n「最近、子どもたちの外遊びの時間が減っている。ある調査では、30年前と比べて平日の外遊び時間が半分以下になったという。その原因として、テレビゲームの普及や塾通いの増加が挙げられる。しかし、外遊びには体力づくりだけでなく、友だちとの関わりを通じてコミュニケーション能力を育てるという大切な役割がある。」\n\n問：筆者は外遊びにどのような役割があると考えていますか。本文から2つ答えなさい。",h:"最後の文に注目。「だけでなく」の前後が2つの役割。",a:"① 体力づくり\n② コミュニケーション能力を育てる",ex:"「Aだけでなく、Bも」→ A と B の2つが答え。\n①体力づくり\n②友だちとの関わりでコミュニケーション能力を育てる\n\n【ポイント】「だけでなく」「のみならず」は2つ以上の要素を並べる表現。入試ではこの構造から複数の答えを求める問題がよく出る。"},
 {id:"j23",g:5,cat:"読解（物語）",q:"次の文を読んで問いに答えよ。\n\n「『あきらめるな。あきらめたらそこで終わりだ。』\n監督の言葉を思い出しながら、美咲は震える足でもう一度走り出した。ゴールまであと200メートル。沿道の声援が、少しずつ大きくなっていく。目の前がにじんで見えた。」\n\n問：「目の前がにじんで見えた」のはなぜか。美咲の気持ちを含めて30字以内で書け。",h:"マラソンで「目がにじむ」のは何のせい？体の状態と気持ちの両方を考えよう。",a:"（例）苦しさに耐えながら懸命に走り、涙があふれたから。",ex:"「にじんで見える」= 涙（感動、苦しさ、悔しさなど）\n美咲の状況：震える足＋監督の言葉＋声援→苦しいけれど諦めない\n\n感情は「苦しさ＋頑張りたい気持ち＋感動」が混じっている。\n\n【入試のポイント】\n比喩的表現の理由を問う問題では：\n①直前・直後の描写をヒントにする\n②登場人物の状況を整理する\n③「なぜそうなったか」を因果関係で書く"},
+// ★ 漢字ドリル（書き順・音訓読み・用例つき） ★
+{id:"k01",g:5,cat:"漢字ドリル",q:"次の熟語の読みをひらがなで答えよ。\n① 誠実　② 遵守　③ 拝啓",h:"①まじめで正直 ②きまりを守る ③手紙の書き出し",a:"① せいじつ　② じゅんしゅ　③ はいけい",kanji:[
+{ch:"誠",on:["セイ"],kun:["まこと"],mean:"うそ偽りのない真心",words:[{w:"誠実",r:"せいじつ"},{w:"誠意",r:"せいい"},{w:"忠誠",r:"ちゅうせい"}]},
+{ch:"実",on:["ジツ"],kun:["み","みの(る)"],mean:"中身がつまっている・本当",words:[{w:"実行",r:"じっこう"},{w:"果実",r:"かじつ"},{w:"実り",r:"みのり"}]},
+{ch:"遵",on:["ジュン"],kun:[],mean:"きまりに従う",words:[{w:"遵守",r:"じゅんしゅ"},{w:"遵法",r:"じゅんぽう"}]},
+{ch:"守",on:["シュ","ス"],kun:["まも(る)","も(り)"],mean:"まもる・見はる",words:[{w:"守備",r:"しゅび"},{w:"留守",r:"るす"},{w:"守る",r:"まもる"}]},
+{ch:"拝",on:["ハイ"],kun:["おが(む)"],mean:"おがむ・うやまう",words:[{w:"拝啓",r:"はいけい"},{w:"参拝",r:"さんぱい"},{w:"拝見",r:"はいけん"}]},
+{ch:"啓",on:["ケイ"],kun:[],mean:"教え導く・開く",words:[{w:"啓発",r:"けいはつ"},{w:"啓示",r:"けいじ"},{w:"拝啓",r:"はいけい"}]}
+],ex:"書き順は各漢字の赤い番号順に書こう。音読みは主に熟語、訓読みは訓読みで使われる。"},
+{id:"k02",g:5,cat:"漢字ドリル",q:"次の熟語の読みをひらがなで答えよ。\n① 遭遇　② 賛否　③ 慎重",h:"①思いがけず出会う ②賛成か反対か ③注意深い",a:"① そうぐう　② さんぴ　③ しんちょう",kanji:[
+{ch:"遭",on:["ソウ"],kun:["あ(う)"],mean:"思いがけず出会う",words:[{w:"遭遇",r:"そうぐう"},{w:"遭難",r:"そうなん"}]},
+{ch:"遇",on:["グウ"],kun:["あ(う)"],mean:"めぐり会う・もてなす",words:[{w:"遭遇",r:"そうぐう"},{w:"待遇",r:"たいぐう"},{w:"境遇",r:"きょうぐう"}]},
+{ch:"賛",on:["サン"],kun:[],mean:"ほめる・同意する",words:[{w:"賛成",r:"さんせい"},{w:"賞賛",r:"しょうさん"},{w:"賛否",r:"さんぴ"}]},
+{ch:"否",on:["ヒ"],kun:["いな"],mean:"いな・そうでない",words:[{w:"賛否",r:"さんぴ"},{w:"否定",r:"ひてい"},{w:"安否",r:"あんぴ"}]},
+{ch:"慎",on:["シン"],kun:["つつし(む)"],mean:"つつしむ・控えめにする",words:[{w:"慎重",r:"しんちょう"},{w:"謹慎",r:"きんしん"},{w:"慎む",r:"つつしむ"}]},
+{ch:"重",on:["ジュウ","チョウ"],kun:["おも(い)","かさ(ねる)","え"],mean:"おもい・かさねる",words:[{w:"重大",r:"じゅうだい"},{w:"貴重",r:"きちょう"},{w:"八重",r:"やえ"}]}
+],ex:"「重」のように音読みが二つ以上ある漢字は、熟語ごとにどちらで読むか覚えよう。"},
+{id:"k03",g:5,cat:"漢字ドリル",q:"次の熟語の読みをひらがなで答えよ。\n① 創造　② 批判　③ 貢献",h:"①新しく作り出す ②よしあしを評価 ③力をつくして役立つ",a:"① そうぞう　② ひはん　③ こうけん",kanji:[
+{ch:"創",on:["ソウ"],kun:["つく(る)","きず"],mean:"新しく作りはじめる",words:[{w:"創造",r:"そうぞう"},{w:"創立",r:"そうりつ"},{w:"独創",r:"どくそう"}]},
+{ch:"造",on:["ゾウ"],kun:["つく(る)"],mean:"つくる・こしらえる",words:[{w:"創造",r:"そうぞう"},{w:"製造",r:"せいぞう"},{w:"構造",r:"こうぞう"}]},
+{ch:"批",on:["ヒ"],kun:[],mean:"よしあしを見分ける",words:[{w:"批判",r:"ひはん"},{w:"批評",r:"ひひょう"},{w:"批准",r:"ひじゅん"}]},
+{ch:"判",on:["ハン","バン"],kun:[],mean:"見分ける・さばく",words:[{w:"判断",r:"はんだん"},{w:"評判",r:"ひょうばん"},{w:"裁判",r:"さいばん"}]},
+{ch:"貢",on:["コウ","ク"],kun:["みつ(ぐ)"],mean:"力をつくして役立つ",words:[{w:"貢献",r:"こうけん"},{w:"年貢",r:"ねんぐ"}]},
+{ch:"献",on:["ケン","コン"],kun:[],mean:"ささげる",words:[{w:"貢献",r:"こうけん"},{w:"献立",r:"こんだて"},{w:"文献",r:"ぶんけん"}]}
+],ex:"「造」と「創」はどちらも「つくる」と読むが、「創」は「新しく生み出す」という意味に注目。"},
+{id:"k04",g:5,cat:"漢字ドリル",q:"次の熟語の読みをひらがなで答えよ。\n① 模範　② 簡潔　③ 尊敬",h:"①見習うべき手本 ②短くまとまっている ③うやまう",a:"① もはん　② かんけつ　③ そんけい",kanji:[
+{ch:"模",on:["モ","ボ"],kun:[],mean:"まねる・かたどる",words:[{w:"模範",r:"もはん"},{w:"模型",r:"もけい"},{w:"規模",r:"きぼ"}]},
+{ch:"範",on:["ハン"],kun:[],mean:"手本・のり",words:[{w:"模範",r:"もはん"},{w:"範囲",r:"はんい"},{w:"師範",r:"しはん"}]},
+{ch:"簡",on:["カン"],kun:[],mean:"てがる・てみじか",words:[{w:"簡単",r:"かんたん"},{w:"簡潔",r:"かんけつ"},{w:"書簡",r:"しょかん"}]},
+{ch:"潔",on:["ケツ"],kun:["いさぎよ(い)"],mean:"きよらか・いさぎよい",words:[{w:"清潔",r:"せいけつ"},{w:"簡潔",r:"かんけつ"},{w:"潔白",r:"けっぱく"}]},
+{ch:"尊",on:["ソン"],kun:["たっと(い)","とうと(ぶ)"],mean:"とうとい・うやまう",words:[{w:"尊敬",r:"そんけい"},{w:"尊重",r:"そんちょう"},{w:"自尊心",r:"じそんしん"}]},
+{ch:"敬",on:["ケイ"],kun:["うやま(う)"],mean:"うやまう",words:[{w:"尊敬",r:"そんけい"},{w:"敬語",r:"けいご"},{w:"敬う",r:"うやまう"}]}
+],ex:"「模」は「モ」「ボ」両方の音読みを持つ。「規模」の「模」は「ボ」と読むので注意。"},
+{id:"k05",g:5,cat:"漢字ドリル",q:"次の熟語の読みをひらがなで答えよ。\n① 展望　② 秩序　③ 歓迎",h:"①見渡すこと ②ととのった順序 ③よろこんで迎える",a:"① てんぼう　② ちつじょ　③ かんげい",kanji:[
+{ch:"展",on:["テン"],kun:[],mean:"広げる・のばす",words:[{w:"展望",r:"てんぼう"},{w:"発展",r:"はってん"},{w:"展示",r:"てんじ"}]},
+{ch:"望",on:["ボウ","モウ"],kun:["のぞ(む)"],mean:"遠くを見る・ねがう",words:[{w:"展望",r:"てんぼう"},{w:"希望",r:"きぼう"},{w:"望む",r:"のぞむ"}]},
+{ch:"秩",on:["チツ"],kun:[],mean:"順序・きまり",words:[{w:"秩序",r:"ちつじょ"}]},
+{ch:"序",on:["ジョ"],kun:[],mean:"順序・はじめ",words:[{w:"秩序",r:"ちつじょ"},{w:"順序",r:"じゅんじょ"},{w:"序文",r:"じょぶん"}]},
+{ch:"歓",on:["カン"],kun:[],mean:"よろこぶ",words:[{w:"歓迎",r:"かんげい"},{w:"歓喜",r:"かんき"},{w:"歓声",r:"かんせい"}]},
+{ch:"迎",on:["ゲイ"],kun:["むか(える)"],mean:"むかえる",words:[{w:"歓迎",r:"かんげい"},{w:"送迎",r:"そうげい"},{w:"迎える",r:"むかえる"}]}
+],ex:"「望」は「ボウ」「モウ」の音読みがあり、「本望(ほんもう)」など一部の熟語で「モウ」と読む。"},
+{id:"k06",g:5,cat:"漢字ドリル",q:"次の熟語の読みをひらがなで答えよ。\n① 謙虚　② 抽象　③ 概念",h:"①控えめ ②具体の反対 ③物事の大まかな考え",a:"① けんきょ　② ちゅうしょう　③ がいねん",kanji:[
+{ch:"謙",on:["ケン"],kun:[],mean:"へりくだる",words:[{w:"謙虚",r:"けんきょ"},{w:"謙遜",r:"けんそん"},{w:"謙譲語",r:"けんじょうご"}]},
+{ch:"虚",on:["キョ","コ"],kun:[],mean:"むなしい・からっぽ",words:[{w:"謙虚",r:"けんきょ"},{w:"虚構",r:"きょこう"},{w:"空虚",r:"くうきょ"}]},
+{ch:"抽",on:["チュウ"],kun:[],mean:"引き出す",words:[{w:"抽象",r:"ちゅうしょう"},{w:"抽選",r:"ちゅうせん"},{w:"抽出",r:"ちゅうしゅつ"}]},
+{ch:"象",on:["ショウ","ゾウ"],kun:[],mean:"かたち・動物のぞう",words:[{w:"現象",r:"げんしょう"},{w:"対象",r:"たいしょう"},{w:"象徴",r:"しょうちょう"}]},
+{ch:"概",on:["ガイ"],kun:[],mean:"おおむね・だいたい",words:[{w:"概念",r:"がいねん"},{w:"概要",r:"がいよう"},{w:"気概",r:"きがい"}]},
+{ch:"念",on:["ネン"],kun:[],mean:"思い・気持ち",words:[{w:"概念",r:"がいねん"},{w:"記念",r:"きねん"},{w:"念願",r:"ねんがん"}]}
+],ex:"「象」は「ショウ」「ゾウ」の両方で読む。熟語によって使い分けるので要注意。"},
+{id:"k07",g:5,cat:"漢字ドリル",q:"次の熟語の読みをひらがなで答えよ。\n① 普遍　② 均衡　③ 穏やか",h:"①どこでも当てはまる ②バランス ③落ち着いた",a:"① ふへん　② きんこう　③ おだやか",kanji:[
+{ch:"普",on:["フ"],kun:[],mean:"あまねく・広くゆきわたる",words:[{w:"普遍",r:"ふへん"},{w:"普通",r:"ふつう"},{w:"普及",r:"ふきゅう"}]},
+{ch:"遍",on:["ヘン"],kun:[],mean:"あまねく・ゆきわたる",words:[{w:"普遍",r:"ふへん"},{w:"一遍",r:"いっぺん"}]},
+{ch:"均",on:["キン"],kun:[],mean:"ひとしい・ならす",words:[{w:"均衡",r:"きんこう"},{w:"均等",r:"きんとう"},{w:"平均",r:"へいきん"}]},
+{ch:"衡",on:["コウ"],kun:[],mean:"はかり・つりあい",words:[{w:"均衡",r:"きんこう"},{w:"平衡",r:"へいこう"}]},
+{ch:"穏",on:["オン"],kun:["おだ(やか)"],mean:"おだやか・落ち着いた",words:[{w:"穏やか",r:"おだやか"},{w:"平穏",r:"へいおん"},{w:"穏健",r:"おんけん"}]}
+],ex:"「普遍」と「不変」はよく入試で混同されるので注意。意味が全く違う（普遍=どこでも当てはまる／不変=変わらない）。"},
+{id:"k08",g:5,cat:"漢字ドリル",q:"次の熟語の読みをひらがなで答えよ。\n① 貫徹　② 功績　③ 信頼",h:"①やりとおす ②立派な働き ③信じてたよる",a:"① かんてつ　② こうせき　③ しんらい",kanji:[
+{ch:"貫",on:["カン"],kun:["つらぬ(く)"],mean:"つらぬく・とおす",words:[{w:"貫徹",r:"かんてつ"},{w:"貫通",r:"かんつう"},{w:"貫く",r:"つらぬく"}]},
+{ch:"徹",on:["テツ"],kun:[],mean:"つらぬきとおす",words:[{w:"貫徹",r:"かんてつ"},{w:"徹夜",r:"てつや"},{w:"徹底",r:"てってい"}]},
+{ch:"功",on:["コウ","ク"],kun:[],mean:"てがら・はたらき",words:[{w:"功績",r:"こうせき"},{w:"成功",r:"せいこう"},{w:"功労",r:"こうろう"}]},
+{ch:"績",on:["セキ"],kun:[],mean:"しごとの成果",words:[{w:"功績",r:"こうせき"},{w:"成績",r:"せいせき"},{w:"業績",r:"ぎょうせき"}]},
+{ch:"頼",on:["ライ"],kun:["たの(む)","たよ(る)"],mean:"たのむ・たよる",words:[{w:"信頼",r:"しんらい"},{w:"依頼",r:"いらい"},{w:"頼る",r:"たよる"}]}
+],ex:"「徹」は「徹夜」「徹底」「貫徹」のように『さいごまでやりとおす』意味の熟語で使われることが多い。"}
 ],
 english:[
 // Vocabulary
@@ -268,6 +345,9 @@ function getWeakQs(s){return questions[s].filter(q=>{const h=S.history[q.id];ret
 function getCatStats(s){const c={};questions[s].forEach(q=>{if(!c[q.cat])c[q.cat]={total:0,correct:0,wrong:0};c[q.cat].total++;const h=S.history[q.id];if(h){c[q.cat].correct+=h.correct;c[q.cat].wrong+=h.wrong}});return c}
 function getStats(s){let t=0,a=0,cc=0,wc=0,ta=0;questions[s].forEach(q=>{t++;const h=S.history[q.id];if(h){a++;cc+=h.correct;wc+=h.wrong;ta+=h.attempts}});return{total:t,attempted:a,cc,wc,ta,acc:ta>0?Math.round(cc/ta*100):0}}
 function subLabel(s){return{math:'算数',japanese:'国語',english:'英語'}[s]}
+function kanjiSvgUrl(ch){const cp=ch.codePointAt(0).toString(16).padStart(5,'0');return `https://cdn.jsdelivr.net/gh/KanjiVG/kanjivg@master/kanji/${cp}.svg`}
+function renderKanjiBlock(kanji){if(!kanji||!kanji.length)return '';return `<div class="kanji-block">${kanji.map(k=>`<div class="kanji-card"><div class="kanji-svg-wrap" data-ch="${esc(k.ch)}"><span class="loading">読み込み中…</span></div><div class="kanji-info"><div class="kmean"><span style="font-size:1.6rem;font-weight:800;color:#78350f;margin-right:8px">${esc(k.ch)}</span>${esc(k.mean)}</div>${k.on&&k.on.length?`<div class="krow"><b>音</b>${esc(k.on.join('・'))}</div>`:''}${k.kun&&k.kun.length?`<div class="krow"><b>訓</b>${esc(k.kun.join('・'))}</div>`:''}<div class="kwords">${k.words.map(w=>`<span class="kword">${esc(w.w)}<small>（${esc(w.r)}）</small></span>`).join('')}</div></div></div>`).join('')}</div>`}
+function loadKanjiSvgs(){document.querySelectorAll('.kanji-svg-wrap[data-ch]').forEach(el=>{if(el.dataset.loaded)return;el.dataset.loaded='1';const ch=el.dataset.ch;fetch(kanjiSvgUrl(ch)).then(r=>r.ok?r.text():Promise.reject()).then(svg=>{el.innerHTML=svg;const s=el.querySelector('svg');if(s){s.removeAttribute('width');s.removeAttribute('height');s.setAttribute('preserveAspectRatio','xMidYMid meet')}}).catch(()=>{el.innerHTML=`<div style="font-size:2.8rem;font-weight:800;color:#78350f">${esc(ch)}</div>`})})}
 function getDailyMsg(){const d=getDayNumber();return motivMessages[d%motivMessages.length]}
 
 // 今日のドリル問題を日付シードで選出
@@ -357,6 +437,7 @@ function renderQuiz(){
   let ansH='';
   if(isRev){ansH=`<div style="margin-top:14px;animation:fadeIn .25s ease">
     <div class="answer-box"><div class="alabel">答え / Answer</div><div class="avalue">${esc(q.a)}</div></div>
+    ${renderKanjiBlock(q.kanji)}
     <div class="explanation-box"><div class="elabel">解説 / Explanation</div><div class="etext">${esc(q.ex)}</div></div>
     <div style="text-align:center;margin-top:12px;font-size:.88rem;color:#475569;font-weight:600">自分の答えは？</div>
     <div class="score-buttons">
@@ -380,7 +461,7 @@ function renderQuiz(){
     <div class="nav-buttons">
       <button class="btn btn-outline" onclick="goTo(${S.idx-1})" ${S.idx===0?'disabled':''}>◀ 前へ</button>
       ${S.idx===total-1?`<button class="btn btn-success" onclick="finish()">結果 ▶</button>`:`<button class="btn btn-primary" onclick="goTo(${S.idx+1})">次へ ▶</button>`}
-    </div>`}
+    </div>`;loadKanjiSvgs()}
 function goTo(i){if(i<0||i>=S.quizQs.length)return;S.idx=i;renderQuiz();window.scrollTo(0,0)}
 function reveal(id){S.revealed[id]=true;renderQuiz()}
 function mark(id,r){
@@ -430,9 +511,10 @@ function renderReview(){
     <div class="q-number">第${i+1}問</div><div class="q-text">${esc(q.q)}</div>
     <div style="margin-top:10px;padding-top:10px;border-top:2px dashed #e2e8f0">
       <div class="answer-box"><div class="alabel">答え</div><div class="avalue">${esc(q.a)}</div></div>
+      ${renderKanjiBlock(q.kanji)}
       <div class="explanation-box"><div class="elabel">解説</div><div class="etext">${esc(q.ex)}</div></div></div></div>`});
   h+=`<div style="text-align:center;margin:18px 0"><button class="btn btn-primary" onclick="navigate('home')">トップ</button></div>`;
-  app.innerHTML=h}
+  app.innerHTML=h;loadKanjiSvgs()}
 
 // ============ ダッシュボード ============
 function renderDash(){
