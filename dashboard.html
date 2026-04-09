@@ -599,30 +599,12 @@
 
         // ============ INITIALIZATION ============
         document.addEventListener('DOMContentLoaded', function() {
-            checkSetup();
-            if (API_URL !== 'https://script.google.com/macros/s/AKfycbxOhZn9viPChDAg4mhtG2TtJI0M2EtESk4jKj8aeoaoYJWr0mtCU_or-WnPceouUzqeAQ/exec') {
-                refreshData();
-            }
+            refreshData();
         });
 
-        // ============ SETUP CHECK ============
-        function checkSetup() {
-            if (API_URL === 'https://script.google.com/macros/s/AKfycbxOhZn9viPChDAg4mhtG2TtJI0M2EtESk4jKj8aeoaoYJWr0mtCU_or-WnPceovUzqeAQ/exec') {
-                document.getElementById('setupMessage').style.display = 'block';
-                document.getElementById('dashboard').style.display = 'none';
-                document.getElementById('loadingMessage').style.display = 'none';
-                document.getElementById('errorMessage').style.display = 'none';
-            }
-        }
-
-        // ============ DATA FETCHING ============
+                // ============ DATA FETCHING ============
         async function refreshData() {
-            if (API_URL === 'https://script.google.com/macros/s/AKfycbxOhZn9viPChDAg4mhtG2TtJI0M2EtESk4jKj8aeoaoYJWr0mtCU_or-WnPceouUzqeAQ/exec') {
-                showError('APIã¨ã³ããã¤ã³ããè¨­å®ããã¦ãã¾ãããã³ã³ã½ã¼ã«ã§API_URLãè¨­å®ãã¦ãã ããã');
-                return;
-            }
-
-            document.getElementById('loadingMessage').style.display = 'block';
+document.getElementById('loadingMessage').style.display = 'block';
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('errorMessage').style.display = 'none';
 
@@ -995,7 +977,7 @@
                 return records.length > 0 ? Math.round(records.reduce((sum, r) => sum + r.accuracy, 0) / records.length) : 0;
             };
 
-            const thisWeekAvg = getWekAverage(thisWeekStart, new Date(today.getTime() + 86400000));
+            const thisWeekAvg = getWeekAverage(thisWeekStart, new Date(today.getTime() + 86400000));
             const lastWeekAvg = getWeekAverage(lastWeekStart, thisWeekStart);
             const weekDiff = thisWeekAvg - lastWeekAvg;
 
@@ -1120,7 +1102,7 @@
                 return records.length > 0 ? Math.round(records.reduce((sum, r) => sum + r.accuracy, 0) / records.length) : 0;
             };
 
-            const thisWeekAvg = getWekAverage(thisWeekStart, new Date(today.getTime() + 86400000));
+            const thisWeekAvg = getWeekAverage(thisWeekStart, new Date(today.getTime() + 86400000));
             const lastWeekAvg = getWeekAverage(lastWeekStart, thisWeekStart);
             const weekDiff = thisWeekAvg - lastWeekAvg;
 
