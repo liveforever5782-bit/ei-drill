@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>çã®å­¦ç¿ããã·ã¥ãã¼ãï¼ä¿è­·èç¨ï¼</title>
+    <title>瑛の学習ダッシュボード（保護者用）</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
@@ -13,7 +13,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', 'ã¡ã¤ãªãª', sans-serif;
+            font-family: 'Segoe UI', 'メイリオ', sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
             color: #333;
             padding: 20px;
@@ -475,30 +475,30 @@
         <!-- Header -->
         <header>
             <div class="header-title">
-                <h1>çã®å­¦ç¿ããã·ã¥ãã¼ã</h1>
-                <p class="header-subtitle">ä¿è­·èç¨ - å­¦ç¿é²æç£è¦</p>
+                <h1>瑛の学習ダッシュボード</h1>
+                <p class="header-subtitle">保護者用 - 学習進捗監視</p>
             </div>
             <div class="header-controls">
                 <div class="last-update">
-                    æçµæ´æ°: <span id="lastUpdate">--:--</span>
+                    最終更新: <span id="lastUpdate">--:--</span>
                 </div>
                 <button class="btn btn-refresh" onclick="refreshData()">
-                    ð ãã¼ã¿ãæ´æ°
+                    🔄 データを更新
                 </button>
             </div>
         </header>
 
         <!-- Setup Message (shown if API URL not configured) -->
         <div id="setupMessage" class="setup-message" style="display: none;">
-            <h3>âï¸ ã»ããã¢ãããå¿è¦ã§ã</h3>
-            <p>Google Apps Script ã®ã¨ã³ããã¤ã³ããè¨­å®ãã¦ãã ããï¼</p>
+            <h3>⚙️ セットアップが必要です</h3>
+            <p>Google Apps Script のエンドポイントを設定してください：</p>
             <ol style="margin-left: 20px; margin-top: 10px;">
-                <li>ãã©ã¦ã¶ã®ã³ã³ã½ã¼ã«ï¼F12ã­ã¼ï¼ãéã</li>
-                <li>ä»¥ä¸ã®ã³ãã³ããå®è¡ããï¼</li>
-                <li><code>API_URL = 'https://script.google.com/macros/s/AKfycbxOhZn9viPChDAg4mhtG2TtJI0M2EtESk4jKj8aeoaoYJWr0mtCU_or-WnPceouUzqeAQ/exec'</code> ãå®éã®URLã«ç½®ãæãã</li>
-                <li>ãã¼ã¸ããªã­ã¼ã</li>
+                <li>ブラウザのコンソール（F12キー）を開く</li>
+                <li>以下のコマンドを実行する：</li>
+                <li><code>API_URL = 'https://script.google.com/macros/s/AKfycbxOhZn9viPChDAg4mhtG2TtJI0M2EtESk4jKj8aeoaoYJWr0mtCU_or-WnPceovUzqeAQ/exec'</code> を実際のURLに置き換える</li>
+                <li>ページをリロード</li>
             </ol>
-            <p style="margin-top: 15px; font-size: 0.95em;">Google Apps Script ã¦ã§ãã¢ããªã®ããã­ã¤ã¡ã³ãURLã¯ãGASãã­ã¸ã§ã¯ãã®ãããã­ã¤ãã»ã¯ã·ã§ã³ããåå¾ã§ãã¾ãã</p>
+            <p style="margin-top: 15px; font-size: 0.95em;">Google Apps Script ウェブアプリのデプロイメントURLは、GASプロジェクトの「デプロイ」セクションから取得できます。</p>
         </div>
 
         <!-- Main Dashboard -->
@@ -506,18 +506,18 @@
             <!-- Section 1: Today's Status -->
             <div class="dashboard-grid">
                 <div class="card">
-                    <h2>ð ä»æ¥ã®å­¦ç¿ç¶æ³</h2>
+                    <h2>📅 今日の学習状況</h2>
                     <div class="status-grid">
                         <div class="status-item">
-                            <div class="status-label">å­¦ç¿ç¶æ</div>
+                            <div class="status-label">学習状態</div>
                             <div id="todayStatus">--</div>
                         </div>
                         <div class="status-item">
-                            <div class="status-label">ä»æ¥ã®æ­£ç­ç</div>
+                            <div class="status-label">今日の正答率</div>
                             <div class="status-value" id="todayAccuracy">--%</div>
                         </div>
                         <div class="status-item">
-                            <div class="status-label">é£ç¶å­¦ç¿æ¥æ°</div>
+                            <div class="status-label">連続学習日数</div>
                             <div class="status-value" id="streakCount">0</div>
                         </div>
                     </div>
@@ -527,7 +527,7 @@
             <!-- Section 2: Daily Accuracy Chart -->
             <div class="dashboard-grid full">
                 <div class="card">
-                    <h2>ð æ¥å¥æ­£ç­çã°ã©ãï¼14æ¥éï¼</h2>
+                    <h2>📊 日別正答率グラフ（14日間）</h2>
                     <div class="chart-container">
                         <canvas id="dailyChart"></canvas>
                     </div>
@@ -537,7 +537,7 @@
             <!-- Section 3: Subject Analysis -->
             <div class="dashboard-grid full">
                 <div class="card">
-                    <h2>ð æç§å¥åæ</h2>
+                    <h2>🎓 教科別分析</h2>
                     <div class="chart-container">
                         <canvas id="subjectChart"></canvas>
                     </div>
@@ -548,7 +548,7 @@
             <!-- Section 4: Weak Areas -->
             <div class="dashboard-grid">
                 <div class="card">
-                    <h2>â ï¸ å¼±ç¹åé</h2>
+                    <h2>⚠️ 弱点分野</h2>
                     <div id="weakAreas"></div>
                 </div>
             </div>
@@ -556,7 +556,7 @@
             <!-- Section 5: Study History -->
             <div class="dashboard-grid full">
                 <div class="card">
-                    <h2>ð å­¦ç¿å±¥æ­´ï¼ææ°20ä»¶ï¼</h2>
+                    <h2>📚 学習履歴（最新20件）</h2>
                     <div id="studyHistory"></div>
                 </div>
             </div>
@@ -564,7 +564,7 @@
             <!-- Section 6: Trend Analysis -->
             <div class="dashboard-grid full">
                 <div class="card">
-                    <h2>ð æé·ãã¬ã³ã</h2>
+                    <h2>📈 成長トレンド</h2>
                     <div id="trendAnalysis"></div>
                 </div>
             </div>
@@ -573,10 +573,10 @@
         <!-- Error State -->
         <div id="errorMessage" style="display: none;">
             <div class="card" style="background: #f8d7da; border-left: 5px solid #dc3545;">
-                <h2 style="color: #721c24;">â ã¨ã©ã¼ãçºçãã¾ãã</h2>
+                <h2 style="color: #721c24;">❌ エラーが発生しました</h2>
                 <p id="errorText" style="color: #721c24; margin-top: 10px;"></p>
                 <button class="btn btn-refresh" onclick="refreshData()" style="margin-top: 15px; background: #dc3545; color: white;">
-                    ååº¦è©¦ã
+                    再度試す
                 </button>
             </div>
         </div>
@@ -584,7 +584,7 @@
         <!-- Loading State -->
         <div id="loadingMessage" style="text-align: center; padding: 60px 20px;">
             <div class="spinner"></div>
-            <p>ãã¼ã¿ãèª­è¾¼ä¸­...</p>
+            <p>データを読込中...</p>
         </div>
     </div>
 
@@ -602,9 +602,10 @@
             refreshData();
         });
 
-                // ============ DATA FETCHING ============
+        // ============ DATA FETCHING ============
         async function refreshData() {
-document.getElementById('loadingMessage').style.display = 'block';
+
+            document.getElementById('loadingMessage').style.display = 'block';
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('errorMessage').style.display = 'none';
 
@@ -617,10 +618,10 @@ document.getElementById('loadingMessage').style.display = 'block';
                     processAndRender();
                     updateLastUpdate();
                 } else {
-                    showError('APIããæå¹ãªãã¼ã¿ãè¿ããã¾ããã§ããã');
+                    showError('APIから有効なデータが返されませんでした。');
                 }
             } catch (error) {
-                showError(`ãã¼ã¿èª­è¾¼ã¨ã©ã¼: ${error.message}`);
+                showError(`データ読込エラー: ${error.message}`);
             }
         }
 
@@ -665,11 +666,11 @@ document.getElementById('loadingMessage').style.display = 'block';
                 const latestRecord = todayRecords[todayRecords.length - 1];
                 const streak = latestRecord.streak || 0;
 
-                statusHtml = '<span class="badge badge-study">â å­¦ç¿æ¸ã¿</span>';
+                statusHtml = '<span class="badge badge-study">✅ 学習済み</span>';
                 document.getElementById('todayAccuracy').textContent = avgAccuracy + '%';
                 document.getElementById('streakCount').textContent = streak;
             } else {
-                statusHtml = '<span class="badge badge-not-study">â ã¾ã æªå­¦ç¿</span>';
+                statusHtml = '<span class="badge badge-not-study">❌ まだ未学習</span>';
                 document.getElementById('todayAccuracy').textContent = '--%';
                 document.getElementById('streakCount').textContent = '0';
             }
@@ -704,7 +705,7 @@ document.getElementById('loadingMessage').style.display = 'block';
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'æ­£ç­ç (%)',
+                        label: '正答率 (%)',
                         data: data,
                         borderColor: '#667eea',
                         backgroundColor: 'rgba(102, 126, 234, 0.1)',
@@ -744,9 +745,9 @@ document.getElementById('loadingMessage').style.display = 'block';
         // ============ SECTION 3: SUBJECT ANALYSIS ============
         function renderSubjectAnalysis() {
             const subjectStats = {
-                math: { correct: 0, total: 0, categories: {} },
-                japanese: { correct: 0, total: 0, categories: {} },
-                english: { correct: 0, total: 0, categories: {} }
+                '算数': { correct: 0, total: 0, categories: {} },
+                '国語': { correct: 0, total: 0, categories: {} },
+                '英語': { correct: 0, total: 0, categories: {} }
             };
 
             allData.forEach(record => {
@@ -756,7 +757,7 @@ document.getElementById('loadingMessage').style.display = 'block';
                     subjectStats[subject].total += record.totalQ;
 
                     try {
-                        const categories = JSON.parse(record.categories || '{}');
+                        const categories = typeof record.categories === 'string' ? JSON.parse(record.categories || '{}') : (record.categories || {});
                         Object.keys(categories).forEach(cat => {
                             if (!subjectStats[subject].categories[cat]) {
                                 subjectStats[subject].categories[cat] = { correct: 0, wrong: 0 };
@@ -768,12 +769,10 @@ document.getElementById('loadingMessage').style.display = 'block';
                 }
             });
 
-            const subjectLabels = ['ç®æ°', 'å½èª', 'è±èª'];
-            const subjectValues = [
-                subjectStats.math.total > 0 ? Math.round(100 * subjectStats.math.correct / subjectStats.math.total) : 0,
-                subjectStats.japanese.total > 0 ? Math.round(100 * subjectStats.japanese.correct / subjectStats.japanese.total) : 0,
-                subjectStats.english.total > 0 ? Math.round(100 * subjectStats.english.correct / subjectStats.english.total) : 0
-            ];
+            const subjectLabels = ['算数', '国語', '英語'];
+            const subjectValues = subjectLabels.map(s =>
+                subjectStats[s].total > 0 ? Math.round(100 * subjectStats[s].correct / subjectStats[s].total) : 0
+            );
 
             const ctx = document.getElementById('subjectChart').getContext('2d');
 
@@ -786,7 +785,7 @@ document.getElementById('loadingMessage').style.display = 'block';
                 data: {
                     labels: subjectLabels,
                     datasets: [{
-                        label: 'æ­£ç­ç (%)',
+                        label: '正答率 (%)',
                         data: subjectValues,
                         backgroundColor: [
                             'rgba(0, 102, 204, 0.7)',
@@ -847,7 +846,7 @@ document.getElementById('loadingMessage').style.display = 'block';
                 });
             });
 
-            document.getElementById('categoryBreakdown').innerHTML = breakdownHtml || '<p style="color: #999;">ã«ãã´ãªã¼ãã¼ã¿ãªã</p>';
+            document.getElementById('categoryBreakdown').innerHTML = breakdownHtml || '<p style="color: #999;">カテゴリーデータなし</p>';
         }
 
         // ============ SECTION 4: WEAK AREAS ============
@@ -856,8 +855,8 @@ document.getElementById('loadingMessage').style.display = 'block';
 
             allData.forEach(record => {
                 try {
-                    const weakCats = JSON.parse(record.weakCategories || '[]');
-                    const categories = JSON.parse(record.categories || '{}');
+                    const weakCats = typeof record.weakCategories === 'string' ? JSON.parse(record.weakCategories || '[]') : (record.weakCategories || []);
+                    const categories = typeof record.categories === 'string' ? JSON.parse(record.categories || '{}') : (record.categories || {});
 
                     weakCats.forEach(weakCat => {
                         if (!weakAreas[weakCat]) {
@@ -884,7 +883,7 @@ document.getElementById('loadingMessage').style.display = 'block';
                 .sort((a, b) => a.accuracy - b.accuracy);
 
             if (sortedWeak.length === 0) {
-                weakHtml = '<div class="empty-state"><div class="empty-state-icon">ð</div><p>å¼±ç¹åéã¯ããã¾ããï¼</p></div>';
+                weakHtml = '<div class="empty-state"><div class="empty-state-icon">🎉</div><p>弱点分野はありません！</p></div>';
             } else {
                 weakHtml = '<ul class="weak-areas-list">';
                 sortedWeak.forEach(w => {
@@ -893,7 +892,7 @@ document.getElementById('loadingMessage').style.display = 'block';
                             <span class="weak-area-name">${w.name}</span>
                             <div class="weak-area-stats">
                                 <span class="weak-area-accuracy">${w.accuracy}%</span>
-                                <span class="weak-area-count">${w.count}å</span>
+                                <span class="weak-area-count">${w.count}回</span>
                             </div>
                         </li>
                     `;
@@ -909,7 +908,7 @@ document.getElementById('loadingMessage').style.display = 'block';
             const recent = allData.slice().reverse().slice(0, 20);
 
             if (recent.length === 0) {
-                document.getElementById('studyHistory').innerHTML = '<p style="color: #999; text-align: center;">å­¦ç¿å±¥æ­´ãããã¾ãã</p>';
+                document.getElementById('studyHistory').innerHTML = '<p style="color: #999; text-align: center;">学習履歴がありません</p>';
                 return;
             }
 
@@ -917,11 +916,11 @@ document.getElementById('loadingMessage').style.display = 'block';
                 <table class="history-table">
                     <thead>
                         <tr>
-                            <th>æ¥æ</th>
-                            <th>æç§</th>
-                            <th>ã¢ã¼ã</th>
-                            <th>æç¸¾</th>
-                            <th>æ­£ç­ç</th>
+                            <th>日時</th>
+                            <th>教科</th>
+                            <th>モード</th>
+                            <th>成績</th>
+                            <th>正答率</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -932,7 +931,8 @@ document.getElementById('loadingMessage').style.display = 'block';
                 const date = formatDate(datetime[0]);
                 const time = datetime[1] ? datetime[1].slice(0, 5) : '--:--';
                 const subject = getSubjectName(record.subject);
-                const subjectBadgeClass = `subject-badge-${record.subject}`;
+                const subjectKey = {'算数':'math','国語':'japanese','英語':'english'}[record.subject] || 'math';
+                const subjectBadgeClass = `subject-badge-${subjectKey}`;
                 const accuracy = record.accuracy;
                 const score = `${record.correct}/${record.totalQ}`;
 
@@ -985,17 +985,17 @@ document.getElementById('loadingMessage').style.display = 'block';
 
             html += `
                 <div class="trend-item">
-                    <div class="trend-label">ä»é±ã®å¹³åæ­£ç­ç</div>
+                    <div class="trend-label">今週の平均正答率</div>
                     <div class="trend-value">${thisWeekAvg}%</div>
-                    <div class="trend-change  ${weekDiff >= 0 ? '' : 'down'}">
-                        ${weekDiff > 0 ? 'â +' : weekDiff < 0 ? 'â ' : 'â '}${Math.abs(weekDiff)}%
+                    <div class="trend-change ${weekDiff >= 0 ? '' : 'down'}">
+                        ${weekDiff > 0 ? '↑ +' : weekDiff < 0 ? '↓ ' : '→ '}${Math.abs(weekDiff)}%
                     </div>
                 </div>
             `;
 
             html += `
                 <div class="trend-item">
-                    <div class="trend-label">åé±ã®å¹³åæ­£ç­ç</div>
+                    <div class="trend-label">先週の平均正答率</div>
                     <div class="trend-value">${lastWeekAvg}%</div>
                 </div>
             `;
@@ -1014,9 +1014,9 @@ document.getElementById('loadingMessage').style.display = 'block';
 
                 html += `
                     <div class="trend-item">
-                        <div class="trend-label">ä»æã®å¹³åæ­£ç­ç</div>
+                        <div class="trend-label">今月の平均正答率</div>
                         <div class="trend-value">${monthAvg}%</div>
-                        <div class="trend-change">${monthDays}æ¥éã®ãã¼ã¿</div>
+                        <div class="trend-change">${monthDays}日間のデータ</div>
                     </div>
                 `;
             }
@@ -1030,137 +1030,32 @@ document.getElementById('loadingMessage').style.display = 'block';
             const date = new Date(dateStr + 'T00:00:00');
             const month = date.getMonth() + 1;
             const day = date.getDate();
-            const dayNames = ['æ¥', 'æ', 'ç«', 'æ°´', 'æ¨', 'é', 'å'];
+            const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
             const dayName = dayNames[date.getDay()];
             return `${month}/${day}(${dayName})`;
         }
 
         function getSubjectName(subject) {
-            const map = {
-                'math': 'ç®æ°',
-                'japanese': 'å let html = `
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>æ¥æ</th>
-                            <th>æç§</th>
-                            <th>ã¢ã¼ã</th>
-                            <th>æç¸¾</th>
-                            <th>æ­£ç­ç</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            recent.forEach(record => {
-                const datetime = record.timestamp.split(' ');
-                const date = formatDate(datetime[0]);
-                const time = datetime[1] ? datetime[1].slice(0, 5) : '--:--';
-                const subject = getSubjectName(record.subject);
-                const subjectBadgeClass = `subject-badge-${record.subject}`;
-                const accuracy = record.accuracy;
-                const score = `${record.correct}/${record.totalQ}`;
-
-                html += `
-                    <tr>
-                        <td>${date} ${time}</td>
-                        <td><span class="subject-badge ${subjectBadgeClass}">${subject}</span></td>
-                        <td>${getModeLabel(record.mode)}</td>
-                        <td>${score}</td>
-                        <td>
-                            <div class="accuracy-bar">
-                                <div class="accuracy-fill" style="width: ${accuracy}%"></div>
-                            </div>
-                            ${accuracy}%
-                        </td>
-                    </tr>
-                `;
-            });
-
-            html += `
-                    </tbody>
-                </table>
-            `;
-
-            document.getElementById('studyHistory').innerHTML = html;
+            return subject || '不明';
         }
 
-        // ============ SECTION 6: TREND ANALYSIS ============
-        function renderTrendAnalysis() {
-            const today = new Date();
-            const thisWeekStart = new Date(today);
-            thisWeekStart.setDate(today.getDate() - today.getDay());
-
-            const lastWeekStart = new Date(thisWeekStart);
-            lastWeekStart.setDate(lastWeekStart.getDate() - 7);
-
-            const getWeekAverage = (startDate, endDate) => {
-                const records = allData.filter(r => {
-                    const recordDate = new Date(r.date);
-                    return recordDate >= startDate && recordDate < endDate;
-                });
-                return records.length > 0 ? Math.round(records.reduce((sum, r) => sum + r.accuracy, 0) / records.length) : 0;
+        function getSubjectColor(subject) {
+            const colors = {
+                '算数': '#0066cc',
+                '国語': '#ff9900',
+                '英語': '#28a745'
             };
-
-            const thisWeekAvg = getWeekAverage(thisWeekStart, new Date(today.getTime() + 86400000));
-            const lastWeekAvg = getWeekAverage(lastWeekStart, thisWeekStart);
-            const weekDiff = thisWeekAvg - lastWeekAvg;
-
-            let html = '<div class="trend-comparison">';
-
-            html += `
-                <div class="trend-item">
-                    <div class="trend-label">ä»é±ã®å¹³åæ­£ç­ç</div>
-                    <div class="trend-value">${thisWeekAvg}%</div>
-                    <div class="trend-change  ${weekDiff >= 0 ? '' : 'down'}">
-                        ${weekDiff > 0 ? 'â +' : weekDiff < 0 ? 'â ' : 'â '}${Math.abs(weekDiff)}%
-                    </div>
-                </div>
-            `;
-
-            html += `
-                <div class="trend-item">
-                    <div class="trend-label">åé±ã®å¹³åæ­£ç­ç</div>
-                    <div class="trend-value">${lastWeekAvg}%</div>
-                </div>
-            `;
-
-            // Monthly average if enough data
-            const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-            const thisMonthRecords = allData.filter(r => {
-                const recordDate = new Date(r.date);
-                return recordDate >= thisMonthStart && recordDate <= today;
-            });
-
-            if (thisMonthRecords.length > 0) {
-                const monthAvg = Math.round(thisMonthRecords.reduce((sum, r) => sum + r.accuracy, 0) / thisMonthRecords.length);
-                const monthDays = thisMonthRecords.length > 0 ?
-                    new Set(thisMonthRecords.map(r => r.date)).size : 0;
-
-                html += `
-                    <div class="trend-item">
-                        <div class="trend-label">ä»æã®å¹³åæ­£ç­ç</div>
-                        <div class="trend-value">${monthAvg}%</div>
-                        <div class="trend-change">${monthDays}æ¥éã®ãã¼ã¿</div>
-                    </div>
-                `;
-            }
-
-            html += '</div>';
-            document.getElementById('trendAnalysis').innerHTML = html;
+            return colors[subject] || '#667eea';
         }
 
-        // ============ UTILITY FUNCTIONS ============
-        function formatDate(dateStr) {
-            const date = new Date(dateStr + 'T00:00:00');
-            const month = date.getMonth() + 1;
-            const day = date.getDate();
-            const dayNames = ['æ¥', 'æ', 'ç«', 'æ°´', 'æ¨', 'é', 'å'];
-            const dayName = dayNames[date.getDay()];
-            return `${month}/${day}(${dayName})`;
-        }
-
-        function getSubjectName(subject) {
+        function getModeLabel(mode) {
             const map = {
-                'math': 'ç®æ°',
-                'japanese': 'å
+                'daily': '毎日ドリル',
+                'normal': '通常',
+                'weak': '弱点克服'
+            };
+            return map[mode] || mode;
+        }
+    </script>
+</body>
+</html>
