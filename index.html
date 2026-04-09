@@ -466,10 +466,10 @@ function renderSubMenu(){
 function setCat(c){S.catFilter=c;renderSubMenu()}
 function getFilteredQs(){let qs=questions[S.subject];if(S.catFilter!=='all')qs=qs.filter(q=>q.cat===S.catFilter);return qs}
 
-function startDaily(s){S.subject=s;S.mode='daily';S.quizQs=getDailyQuestions(s,10);S.idx=0;S.revealed={};S.scores={};S.view='quiz';render();window.scrollTo(0,0)}
-function startFiltered(){const qs=getFilteredQs();if(!qs.length)return;S.mode='normal';S.quizQs=shuffle(qs);S.idx=0;S.revealed={};S.scores={};S.view='quiz';render();window.scrollTo(0,0)}
-function startWeak(s){const w=getWeakQs(s);if(!w.length)return;S.subject=s;S.mode='weak';S.quizQs=shuffle(w);S.idx=0;S.revealed={};S.scores={};S.view='quiz';render();window.scrollTo(0,0)}
-function startAllWeak(){const all=['math','japanese','english'].flatMap(s=>getWeakQs(s));if(!all.length)return;S.subject='math';S.mode='weak';S.quizQs=shuffle(all);S.idx=0;S.revealed={};S.scores={};S.view='quiz';render();window.scrollTo(0,0)}
+function startDaily(s){S.subject=s;S.mode='daily';S.quizQs=getDailyQuestions(s,10);S.idx=0;S.revealed={};S.scores={};S._quizStart=Date.now();S.view='quiz';render();window.scrollTo(0,0)}
+function startFiltered(){const qs=getFilteredQs();if(!qs.length)return;S.mode='normal';S.quizQs=shuffle(qs);S.idx=0;S.revealed={};S.scores={};S._quizStart=Date.now();S.view='quiz';render();window.scrollTo(0,0)}
+function startWeak(s){const w=getWeakQs(s);if(!w.length)return;S.subject=s;S.mode='weak';S.quizQs=shuffle(w);S.idx=0;S.revealed={};S.scores={};S._quizStart=Date.now();S.view='quiz';render();window.scrollTo(0,0)}
+function startAllWeak(){const all=['math','japanese','english'].flatMap(s=>getWeakQs(s));if(!all.length)return;S.subject='math';S.mode='weak';S.quizQs=shuffle(all);S.idx=0;S.revealed={};S.scores={};S._quizStart=Date.now();S.view='quiz';render();window.scrollTo(0,0)}
 
 // ============ クイズ ============
 function renderQuiz(){
@@ -524,8 +524,26 @@ function mark(id,r){
   if(S.lastDate!==todayKey){if(!S.lastDate||Math.floor((new Date(todayKey)-new Date(S.lastDate))/(1000*60*60*24))<=1)S.streak++;else S.streak=1;S.lastDate=todayKey}
   saveState();renderQuiz()}
 
+// ============ 学習ログ送信 ============
+const GAS_URL='https://script.google.com/macros/s/AKfycbxOhZn9viPChDAg4mhtG2TtJI0M2EtESk4jKj8aeoaoYJWr0mtCU_or-WnPceovUzqeAQ/exec';
+function sendDrillLog(correct,wrong,total,catStats,weakCats){
+  if(!GAS_URL)return;
+  const startTime=S._quizStart||Date.now();
+  const duration=Math.round((Date.now()-startTime)/1000);
+  const payload={subject:subLabel(S.subject),mode:S.mode||'daily',totalQ:total,correct:correct,wrong:wrong,accuracy:total>0?Math.round(correct/total*100):0,categories:catStats||{},weakCategories:weakCats||[],duration:duration,streak:S.streak||0};
+  try{fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)}).catch(()=>{})}catch(e){}
+}
+
 // ============ 結果 ============
-function finish(){S.view='finish';render();window.scrollTo(0,0)}
+function finish(){
+  const qs=S.quizQs,total=qs.length;let c=0,w=0;
+  qs.forEach(q=>{if(S.scores[q.id]==='correct')c++;else if(S.scores[q.id]==='wrong')w++});
+  const catStats={},weakCats=[];
+  qs.forEach(q=>{if(!catStats[q.cat])catStats[q.cat]={correct:0,wrong:0};if(S.scores[q.id]==='correct')catStats[q.cat].correct++;else if(S.scores[q.id]==='wrong')catStats[q.cat].wrong++});
+  Object.keys(catStats).forEach(cat=>{const s=catStats[cat],t=s.correct+s.wrong;if(t>0&&Math.round(s.correct/t*100)<60)weakCats.push(cat)});
+  sendDrillLog(c,w,total,catStats,weakCats);
+  S.view='finish';render();window.scrollTo(0,0)
+}
 function renderFinish(){
   const qs=S.quizQs,total=qs.length;let c=0,w=0,u=0;
   qs.forEach(q=>{if(S.scores[q.id]==='correct')c++;else if(S.scores[q.id]==='wrong')w++;else u++});
@@ -547,7 +565,7 @@ function renderFinish(){
       <button class="btn btn-outline" onclick="showReview()">全問解説</button>
       ${w>0?`<button class="btn btn-danger" onclick="retryWrong()">間違いやり直し</button>`:''}
     </div></div>`}
-function retryWrong(){const wqs=S.quizQs.filter(q=>S.scores[q.id]==='wrong');if(!wqs.length)return;S.mode='weak';S.quizQs=shuffle(wqs);S.idx=0;S.revealed={};S.scores={};S.view='quiz';render();window.scrollTo(0,0)}
+function retryWrong(){const wqs=S.quizQs.filter(q=>S.scores[q.id]==='wrong');if(!wqs.length)return;S.mode='weak';S.quizQs=shuffle(wqs);S.idx=0;S.revealed={};S.scores={};S._quizStart=Date.now();S.view='quiz';render();window.scrollTo(0,0)}
 function showReview(){S.view='reviewAll';render();window.scrollTo(0,0)}
 function renderReview(){
   const qs=S.quizQs,cls=S.subject,label=subLabel(S.subject);
