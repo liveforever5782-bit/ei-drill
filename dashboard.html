@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>çã®å­¦ç¿ããã·ã¥ãã¼ãï¼ä¿è­·èç¨ï¼</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'ã¡ã¤ãªãª', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            flex: 1;
+        }
+
+        .header-title h1 {
+            font-size: 2.5em;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .header-subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .last-update {
+            font-size: 0.9em;
+            opacity: 0.9;
+            white-space: nowrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-refresh {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-refresh:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+
+        .setup-message {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            color: #856404;
+        }
+
+        .setup-message h3 {
+            margin-bottom: 10px;
+        }
+
+        .setup-message code {
+            background: #fffacd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-grid.full {
+            grid-template-columns: 1fr;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .card h2 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h2::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        /* Today's Status Section */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .status-item {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+        }
+
+        .status-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+
+        .badge-study {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-not-study {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+
+        /* Subject Colors */
+        .color-math {
+            color: #0066cc;
+            border-left-color: #0066cc;
+        }
+
+        .bg-math {
+            background-color: rgba(0, 102, 204, 0.1);
+        }
+
+        .color-japanese {
+            color: #ff9900;
+            border-left-color: #ff9900;
+        }
+
+        .bg-japanese {
+            background-color: rgba(255, 153, 0, 0.1);
+        }
+
+        .color-english {
+            color: #28a745;
+            border-left-color: #28a745;
+        }
+
+        .bg-english {
+            background-color: rgba(40, 167, 69, 0.1);
+        }
+
+        /* Category Analysis */
+        .category-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .category-item {
+            padding: 15px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .category-name {
+            font-weight: 600;
+            font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+
+        .category-accuracy {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        /* Weak Areas */
+        .weak-areas-list {
+            list-style: none;
+        }
+
+        .weak-area-item {
+            padding: 15px;
+            background: linear-gradient(135deg, #ffe8e8 0%, #fff5e8 100%);
+            border-left: 4px solid #ff6b6b;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .weak-area-name {
+            font-weight: 600;
+            font-size: 1.05em;
+        }
+
+        .weak-area-stats {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .weak-area-accuracy {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #ff6b6b;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .weak-area-count {
+            font-size: 0.9em;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        /* Study History Table */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .history-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .history-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .history-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .history-table tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        .subject-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+
+        .subject-badge-math {
+            background: rgba(0, 102, 204, 0.2);
+            color: #0066cc;
+        }
+
+        .subject-badge-japanese {
+            background: rgba(255, 153, 0, 0.2);
+            color: #ff9900;
+        }
+
+        .subject-badge-english {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+
+        .accuracy-bar {
+            display: inline-block;
+            width: 100px;
+            height: 24px;
+            background: #eee;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .accuracy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+
+        /* Trend Section */
+        .trend-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .trend-item {
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .trend-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .trend-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .trend-change {
+            font-size: 0.9em;
+            margin-top: 10px;
+            color: #28a745;
+        }
+
+        .trend-change.down {
+            color: #dc3545;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-title h1 {
+                font-size: 1.8em;
+            }
+
+            .header-controls {
+                justify-content: center;
+                width: 100%;
+                margin-top: 15px;
+            }
+
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .history-table {
+                font-size: 0.9em;
+            }
+
+            .history-table th,
+            .history-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="header-title">
+                <h1>çã®å­¦ç¿ããã·ã¥ãã¼ã</h1>
+                <p class="header-subtitle">ä¿è­·èç¨ - å­¦ç¿é²æç£è¦</p>
+            </div>
+            <div class="header-controls">
+                <div class="last-update">
+                    æçµæ´æ°: <span id="lastUpdate">--:--</span>
+                </div>
+                <button class="btn btn-refresh" onclick="refreshData()">
+                    ð ãã¼ã¿ãæ´æ°
+                </button>
+            </div>
+        </header>
+
+        <!-- Setup Message (shown if API URL not configured) -->
+        <div id="setupMessage" class="setup-message" style="display: none;">
+            <h3>âï¸ ã»ããã¢ãããå¿è¦ã§ã</h3>
+            <p>Google Apps Script ã®ã¨ã³ããã¤ã³ããè¨­å®ãã¦ãã ããï¼</p>
+            <ol style="margin-left: 20px; margin-top: 10px;">
+                <li>ãã©ã¦ã¶ã®ã³ã³ã½ã¼ã«ï¼F12ã­ã¼ï¼ãéã</li>
+                <li>ä»¥ä¸ã®ã³ãã³ããå®è¡ããï¼</li>
+                <li><code>API_URL = 'https://script.google.com/macros/s/AKfycbxOhZn9viPChDAg4mhtG2TtJI0M2EtESk4jKj8aeoaoYJWr0mtCU_or-WnPceouUzqeAQ/exec'</code> ãå®éã®URLã«ç½®ãæãã</li>
+                <li>ãã¼ã¸ããªã­ã¼ã</li>
+            </ol>
+            <p style="margin-top: 15px; font-size: 0.95em;">Google Apps Script ã¦ã§ãã¢ããªã®ããã­ã¤ã¡ã³ãURLã¯ãGASãã­ã¸ã§ã¯ãã®ãããã­ã¤ãã»ã¯ã·ã§ã³ããåå¾ã§ãã¾ãã</p>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div id="dashboard" style="display: none;">
+            <!-- Section 1: Today's Status -->
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h2>ð ä»æ¥ã®å­¦ç¿ç¶æ³</h2>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <div class="status-label">å­¦ç¿ç¶æ</div>
+                            <div id="todayStatus">--</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">ä»æ¥ã®æ­£ç­ç</div>
+                            <div class="status-value" id="todayAccuracy">--%</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">é£ç¶å­¦ç¿æ¥æ°</div>
+                            <div class="status-value" id="streakCount">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Daily Accuracy Chart -->
+            <div class="dashboard-grid full">
+                <div class="card">
+                    <h2>ð æ¥å¥æ­£ç­çã°ã©ãï¼14æ¥éï¼</h2>
+                    <div class="chart-container">
+                        <canvas id="dailyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Subject Analysis -->
+            <div class="dashboard-grid full">
+                <div class="card">
+                    <h2>ð æç§å¥åæ</h2>
+                    <div class="chart-container">
+                        <canvas id="subjectChart"></canvas>
+                    </div>
+                    <div id="categoryBreakdown" class="category-breakdown"></div>
+                </div>
+            </div>
+
+            <!-- Section 4: Weak Areas -->
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h2>â ï¸ å¼±ç¹åé</h2>
+                    <div id="weakAreas"></div>
+                </div>
+            </div>
+
+            <!-- Section 5: Study History -->
+            <div class="dashboard-grid full">
+                <div class="card">
+                    <h2>ð å­¦ç¿å±¥æ­´ï¼ææ°20ä»¶ï¼</h2>
+                    <div id="studyHistory"></div>
+                </div>
+            </div>
+
+            <!-- Section 6: Trend Analysis -->
+            <div class="dashboard-grid full">
+                <div class="card">
+                    <h2>ð æé·ãã¬ã³ã</h2>
+                    <div id="trendAnalysis"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorMessage" style="display: none;">
+            <div class="card" style="background: #f8d7da; border-left: 5px solid #dc3545;">
+                <h2 style="color: #721c24;">â ã¨ã©ã¼ãçºçãã¾ãã</h2>
+                <p id="errorText" style="color: #721c24; margin-top: 10px;"></p>
+                <button class="btn btn-refresh" onclick="refreshData()" style="margin-top: 15px; background: #dc3545; color: white;">
+                    ååº¦è©¦ã
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingMessage" style="text-align: center; padding: 60px 20px;">
+            <div class="spinner"></div>
+            <p>ãã¼ã¿ãèª­è¾¼ä¸­...</p>
+        </div>
+    </div>
+
+    <script>
+        // ============ CONFIGURATION ============
+        let API_URL = 'https://script.google.com/macros/s/AKfycbxOhZn9viPChDAg4mhtG2TtJI0M2EtESk4jKj8aeoaoYJWr0mtCU_or-WnPceovUzqeAQ/exec';
+
+        // ============ GLOBAL STATE ============
+        let allData = [];
+        let dailyChartInstance = null;
+        let subjectChartInstance = null;
+
+        // ============ INITIALIZATION ============
+        document.addEventListener('DOMContentLoaded', function() {
+            checkSetup();
+            if (API_URL !== 'https://script.google.com/macros/s/AKfycbxOhZn9viPChDAg4mhtG2TtJI0M2EtESk4jKj8aeoaoYJWr0mtCU_or-WnPceouUzqeAQ/exec') {
+                refreshData();
+            }
+        });
+
+        // ============ SETUP CHECK ============
+        function checkSetup() {
+            if (API_URL === 'https://script.google.com/macros/s/AKfycbxOhZn9viPChDAg4mhtG2TtJI0M2EtESk4jKj8aeoaoYJWr0mtCU_or-WnPceovUzqeAQ/exec') {
+                document.getElementById('setupMessage').style.display = 'block';
+                document.getElementById('dashboard').style.display = 'none';
+                document.getElementById('loadingMessage').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'none';
+            }
+        }
+
+        // ============ DATA FETCHING ============
+        async function refreshData() {
+            if (API_URL === 'https://script.google.com/macros/s/AKfycbxOhZn9viPChDAg4mhtG2TtJI0M2EtESk4jKj8aeoaoYJWr0mtCU_or-WnPceouUzqeAQ/exec') {
+                showError('APIã¨ã³ããã¤ã³ããè¨­å®ããã¦ãã¾ãããã³ã³ã½ã¼ã«ã§API_URLãè¨­å®ãã¦ãã ããã');
+                return;
+            }
+
+            document.getElementById('loadingMessage').style.display = 'block';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+
+            try {
+                const response = await fetch(API_URL);
+                const jsonData = await response.json();
+
+                if (jsonData.status === 'ok' && jsonData.data) {
+                    allData = jsonData.data;
+                    processAndRender();
+                    updateLastUpdate();
+                } else {
+                    showError('APIããæå¹ãªãã¼ã¿ãè¿ããã¾ããã§ããã');
+                }
+            } catch (error) {
+                showError(`ãã¼ã¿èª­è¾¼ã¨ã©ã¼: ${error.message}`);
+            }
+        }
+
+        function updateLastUpdate() {
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ':' +
+                           now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('lastUpdate').textContent = timeStr;
+        }
+
+        // ============ DATA PROCESSING ============
+        function processAndRender() {
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+
+            renderTodayStatus();
+            renderDailyChart();
+            renderSubjectAnalysis();
+            renderWeakAreas();
+            renderStudyHistory();
+            renderTrendAnalysis();
+        }
+
+        function showError(message) {
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('errorText').textContent = message;
+        }
+
+        // ============ SECTION 1: TODAY'S STATUS ============
+        function renderTodayStatus() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayRecords = allData.filter(r => r.date === today);
+
+            let statusHtml = '';
+            if (todayRecords.length > 0) {
+                const avgAccuracy = Math.round(
+                    todayRecords.reduce((sum, r) => sum + r.accuracy, 0) / todayRecords.length
+                );
+                const latestRecord = todayRecords[todayRecords.length - 1];
+                const streak = latestRecord.streak || 0;
+
+                statusHtml = '<span class="badge badge-study">â å­¦ç¿æ¸ã¿</span>';
+                document.getElementById('todayAccuracy').textContent = avgAccuracy + '%';
+                document.getElementById('streakCount').textContent = streak;
+            } else {
+                statusHtml = '<span class="badge badge-not-study">â ã¾ã æªå­¦ç¿</span>';
+                document.getElementById('todayAccuracy').textContent = '--%';
+                document.getElementById('streakCount').textContent = '0';
+            }
+            document.getElementById('todayStatus').innerHTML = statusHtml;
+        }
+
+        // ============ SECTION 2: DAILY CHART ============
+        function renderDailyChart() {
+            const dailyAccuracy = {};
+            allData.forEach(record => {
+                if (!dailyAccuracy[record.date]) {
+                    dailyAccuracy[record.date] = [];
+                }
+                dailyAccuracy[record.date].push(record.accuracy);
+            });
+
+            const sortedDates = Object.keys(dailyAccuracy).sort().slice(-14);
+            const labels = sortedDates.map(date => formatDate(date));
+            const data = sortedDates.map(date => {
+                const accuracies = dailyAccuracy[date];
+                return Math.round(accuracies.reduce((a, b) => a + b, 0) / accuracies.length);
+            });
+
+            const ctx = document.getElementById('dailyChart').getContext('2d');
+
+            if (dailyChartInstance) {
+                dailyChartInstance.destroy();
+            }
+
+            dailyChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'æ­£ç­ç (%)',
+                        data: data,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#667eea',
+                        pointBorderColor: 'white',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============ SECTION 3: SUBJECT ANALYSIS ============
+        function renderSubjectAnalysis() {
+            const subjectStats = {
+                math: { correct: 0, total: 0, categories: {} },
+                japanese: { correct: 0, total: 0, categories: {} },
+                english: { correct: 0, total: 0, categories: {} }
+            };
+
+            allData.forEach(record => {
+                const subject = record.subject;
+                if (subjectStats[subject]) {
+                    subjectStats[subject].correct += record.correct;
+                    subjectStats[subject].total += record.totalQ;
+
+                    try {
+                        const categories = JSON.parse(record.categories || '{}');
+                        Object.keys(categories).forEach(cat => {
+                            if (!subjectStats[subject].categories[cat]) {
+                                subjectStats[subject].categories[cat] = { correct: 0, wrong: 0 };
+                            }
+                            subjectStats[subject].categories[cat].correct += categories[cat].correct || 0;
+                            subjectStats[subject].categories[cat].wrong += categories[cat].wrong || 0;
+                        });
+                    } catch (e) {}
+                }
+            });
+
+            const subjectLabels = ['ç®æ°', 'å½èª', 'è±èª'];
+            const subjectValues = [
+                subjectStats.math.total > 0 ? Math.round(100 * subjectStats.math.correct / subjectStats.math.total) : 0,
+                subjectStats.japanese.total > 0 ? Math.round(100 * subjectStats.japanese.correct / subjectStats.japanese.total) : 0,
+                subjectStats.english.total > 0 ? Math.round(100 * subjectStats.english.correct / subjectStats.english.total) : 0
+            ];
+
+            const ctx = document.getElementById('subjectChart').getContext('2d');
+
+            if (subjectChartInstance) {
+                subjectChartInstance.destroy();
+            }
+
+            subjectChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: subjectLabels,
+                    datasets: [{
+                        label: 'æ­£ç­ç (%)',
+                        data: subjectValues,
+                        backgroundColor: [
+                            'rgba(0, 102, 204, 0.7)',
+                            'rgba(255, 153, 0, 0.7)',
+                            'rgba(40, 167, 69, 0.7)'
+                        ],
+                        borderColor: [
+                            '#0066cc',
+                            '#ff9900',
+                            '#28a745'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Render category breakdown
+            let breakdownHtml = '';
+            Object.keys(subjectStats).forEach(subject => {
+                const categoryNames = Object.keys(subjectStats[subject].categories);
+                categoryNames.forEach(catName => {
+                    const catData = subjectStats[subject].categories[catName];
+                    const catTotal = catData.correct + catData.wrong;
+                    const catAccuracy = catTotal > 0 ? Math.round(100 * catData.correct / catTotal) : 0;
+
+                    let colorClass = '';
+                    if (subject === 'math') colorClass = 'color-math';
+                    else if (subject === 'japanese') colorClass = 'color-japanese';
+                    else colorClass = 'color-english';
+
+                    breakdownHtml += `
+                        <div class="category-item" style="border-left-color: ${getSubjectColor(subject)};">
+                            <div class="category-name">${catName}</div>
+                            <div class="category-accuracy">${catAccuracy}%</div>
+                        </div>
+                    `;
+                });
+            });
+
+            document.getElementById('categoryBreakdown').innerHTML = breakdownHtml || '<p style="color: #999;">ã«ãã´ãªã¼ãã¼ã¿ãªã</p>';
+        }
+
+        // ============ SECTION 4: WEAK AREAS ============
+        function renderWeakAreas() {
+            const weakAreas = {};
+
+            allData.forEach(record => {
+                try {
+                    const weakCats = JSON.parse(record.weakCategories || '[]');
+                    const categories = JSON.parse(record.categories || '{}');
+
+                    weakCats.forEach(weakCat => {
+                        if (!weakAreas[weakCat]) {
+                            weakAreas[weakCat] = { accuracy: 0, count: 0, attempts: 0 };
+                        }
+                        weakAreas[weakCat].count += 1;
+                        if (categories[weakCat]) {
+                            const catTotal = (categories[weakCat].correct || 0) + (categories[weakCat].wrong || 0);
+                            weakAreas[weakCat].accuracy += categories[weakCat].correct || 0;
+                            weakAreas[weakCat].attempts += catTotal;
+                        }
+                    });
+                } catch (e) {}
+            });
+
+            let weakHtml = '';
+            const sortedWeak = Object.entries(weakAreas)
+                .map(([name, data]) => ({
+                    name,
+                    accuracy: data.attempts > 0 ? Math.round(100 * data.accuracy / data.attempts) : 0,
+                    count: data.count
+                }))
+                .filter(w => w.accuracy < 70)
+                .sort((a, b) => a.accuracy - b.accuracy);
+
+            if (sortedWeak.length === 0) {
+                weakHtml = '<div class="empty-state"><div class="empty-state-icon">ð</div><p>å¼±ç¹åéã¯ããã¾ããï¼</p></div>';
+            } else {
+                weakHtml = '<ul class="weak-areas-list">';
+                sortedWeak.forEach(w => {
+                    weakHtml += `
+                        <li class="weak-area-item">
+                            <span class="weak-area-name">${w.name}</span>
+                            <div class="weak-area-stats">
+                                <span class="weak-area-accuracy">${w.accuracy}%</span>
+                                <span class="weak-area-count">${w.count}å</span>
+                            </div>
+                        </li>
+                    `;
+                });
+                weakHtml += '</ul>';
+            }
+
+            document.getElementById('weakAreas').innerHTML = weakHtml;
+        }
+
+        // ============ SECTION 5: STUDY HISTORY ============
+        function renderStudyHistory() {
+            const recent = allData.slice().reverse().slice(0, 20);
+
+            if (recent.length === 0) {
+                document.getElementById('studyHistory').innerHTML = '<p style="color: #999; text-align: center;">å­¦ç¿å±¥æ­´ãããã¾ãã</p>';
+                return;
+            }
+
+            let html = `
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>æ¥æ</th>
+                            <th>æç§</th>
+                            <th>ã¢ã¼ã</th>
+                            <th>æç¸¾</th>
+                            <th>æ­£ç­ç</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            recent.forEach(record => {
+                const datetime = record.timestamp.split(' ');
+                const date = formatDate(datetime[0]);
+                const time = datetime[1] ? datetime[1].slice(0, 5) : '--:--';
+                const subject = getSubjectName(record.subject);
+                const subjectBadgeClass = `subject-badge-${record.subject}`;
+                const accuracy = record.accuracy;
+                const score = `${record.correct}/${record.totalQ}`;
+
+                html += `
+                    <tr>
+                        <td>${date} ${time}</td>
+                        <td><span class="subject-badge ${subjectBadgeClass}">${subject}</span></td>
+                        <td>${getModeLabel(record.mode)}</td>
+                        <td>${score}</td>
+                        <td>
+                            <div class="accuracy-bar">
+                                <div class="accuracy-fill" style="width: ${accuracy}%"></div>
+                            </div>
+                            ${accuracy}%
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            document.getElementById('studyHistory').innerHTML = html;
+        }
+
+        // ============ SECTION 6: TREND ANALYSIS ============
+        function renderTrendAnalysis() {
+            const today = new Date();
+            const thisWeekStart = new Date(today);
+            thisWeekStart.setDate(today.getDate() - today.getDay());
+
+            const lastWeekStart = new Date(thisWeekStart);
+            lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+
+            const getWeekAverage = (startDate, endDate) => {
+                const records = allData.filter(r => {
+                    const recordDate = new Date(r.date);
+                    return recordDate >= startDate && recordDate < endDate;
+                });
+                return records.length > 0 ? Math.round(records.reduce((sum, r) => sum + r.accuracy, 0) / records.length) : 0;
+            };
+
+            const thisWeekAvg = getWekAverage(thisWeekStart, new Date(today.getTime() + 86400000));
+            const lastWeekAvg = getWeekAverage(lastWeekStart, thisWeekStart);
+            const weekDiff = thisWeekAvg - lastWeekAvg;
+
+            let html = '<div class="trend-comparison">';
+
+            html += `
+                <div class="trend-item">
+                    <div class="trend-label">ä»é±ã®å¹³åæ­£ç­ç</div>
+                    <div class="trend-value">${thisWeekAvg}%</div>
+                    <div class="trend-change  ${weekDiff >= 0 ? '' : 'down'}">
+                        ${weekDiff > 0 ? 'â +' : weekDiff < 0 ? 'â ' : 'â '}${Math.abs(weekDiff)}%
+                    </div>
+                </div>
+            `;
+
+            html += `
+                <div class="trend-item">
+                    <div class="trend-label">åé±ã®å¹³åæ­£ç­ç</div>
+                    <div class="trend-value">${lastWeekAvg}%</div>
+                </div>
+            `;
+
+            // Monthly average if enough data
+            const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+            const thisMonthRecords = allData.filter(r => {
+                const recordDate = new Date(r.date);
+                return recordDate >= thisMonthStart && recordDate <= today;
+            });
+
+            if (thisMonthRecords.length > 0) {
+                const monthAvg = Math.round(thisMonthRecords.reduce((sum, r) => sum + r.accuracy, 0) / thisMonthRecords.length);
+                const monthDays = thisMonthRecords.length > 0 ?
+                    new Set(thisMonthRecords.map(r => r.date)).size : 0;
+
+                html += `
+                    <div class="trend-item">
+                        <div class="trend-label">ä»æã®å¹³åæ­£ç­ç</div>
+                        <div class="trend-value">${monthAvg}%</div>
+                        <div class="trend-change">${monthDays}æ¥éã®ãã¼ã¿</div>
+                    </div>
+                `;
+            }
+
+            html += '</div>';
+            document.getElementById('trendAnalysis').innerHTML = html;
+        }
+
+        // ============ UTILITY FUNCTIONS ============
+        function formatDate(dateStr) {
+            const date = new Date(dateStr + 'T00:00:00');
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const dayNames = ['æ¥', 'æ', 'ç«', 'æ°´', 'æ¨', 'é', 'å'];
+            const dayName = dayNames[date.getDay()];
+            return `${month}/${day}(${dayName})`;
+        }
+
+        function getSubjectName(subject) {
+            const map = {
+                'math': 'ç®æ°',
+                'japanese': 'å let html = `
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>æ¥æ</th>
+                            <th>æç§</th>
+                            <th>ã¢ã¼ã</th>
+                            <th>æç¸¾</th>
+                            <th>æ­£ç­ç</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            recent.forEach(record => {
+                const datetime = record.timestamp.split(' ');
+                const date = formatDate(datetime[0]);
+                const time = datetime[1] ? datetime[1].slice(0, 5) : '--:--';
+                const subject = getSubjectName(record.subject);
+                const subjectBadgeClass = `subject-badge-${record.subject}`;
+                const accuracy = record.accuracy;
+                const score = `${record.correct}/${record.totalQ}`;
+
+                html += `
+                    <tr>
+                        <td>${date} ${time}</td>
+                        <td><span class="subject-badge ${subjectBadgeClass}">${subject}</span></td>
+                        <td>${getModeLabel(record.mode)}</td>
+                        <td>${score}</td>
+                        <td>
+                            <div class="accuracy-bar">
+                                <div class="accuracy-fill" style="width: ${accuracy}%"></div>
+                            </div>
+                            ${accuracy}%
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            document.getElementById('studyHistory').innerHTML = html;
+        }
+
+        // ============ SECTION 6: TREND ANALYSIS ============
+        function renderTrendAnalysis() {
+            const today = new Date();
+            const thisWeekStart = new Date(today);
+            thisWeekStart.setDate(today.getDate() - today.getDay());
+
+            const lastWeekStart = new Date(thisWeekStart);
+            lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+
+            const getWeekAverage = (startDate, endDate) => {
+                const records = allData.filter(r => {
+                    const recordDate = new Date(r.date);
+                    return recordDate >= startDate && recordDate < endDate;
+                });
+                return records.length > 0 ? Math.round(records.reduce((sum, r) => sum + r.accuracy, 0) / records.length) : 0;
+            };
+
+            const thisWeekAvg = getWekAverage(thisWeekStart, new Date(today.getTime() + 86400000));
+            const lastWeekAvg = getWeekAverage(lastWeekStart, thisWeekStart);
+            const weekDiff = thisWeekAvg - lastWeekAvg;
+
+            let html = '<div class="trend-comparison">';
+
+            html += `
+                <div class="trend-item">
+                    <div class="trend-label">ä»é±ã®å¹³åæ­£ç­ç</div>
+                    <div class="trend-value">${thisWeekAvg}%</div>
+                    <div class="trend-change  ${weekDiff >= 0 ? '' : 'down'}">
+                        ${weekDiff > 0 ? 'â +' : weekDiff < 0 ? 'â ' : 'â '}${Math.abs(weekDiff)}%
+                    </div>
+                </div>
+            `;
+
+            html += `
+                <div class="trend-item">
+                    <div class="trend-label">åé±ã®å¹³åæ­£ç­ç</div>
+                    <div class="trend-value">${lastWeekAvg}%</div>
+                </div>
+            `;
+
+            // Monthly average if enough data
+            const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+            const thisMonthRecords = allData.filter(r => {
+                const recordDate = new Date(r.date);
+                return recordDate >= thisMonthStart && recordDate <= today;
+            });
+
+            if (thisMonthRecords.length > 0) {
+                const monthAvg = Math.round(thisMonthRecords.reduce((sum, r) => sum + r.accuracy, 0) / thisMonthRecords.length);
+                const monthDays = thisMonthRecords.length > 0 ?
+                    new Set(thisMonthRecords.map(r => r.date)).size : 0;
+
+                html += `
+                    <div class="trend-item">
+                        <div class="trend-label">ä»æã®å¹³åæ­£ç­ç</div>
+                        <div class="trend-value">${monthAvg}%</div>
+                        <div class="trend-change">${monthDays}æ¥éã®ãã¼ã¿</div>
+                    </div>
+                `;
+            }
+
+            html += '</div>';
+            document.getElementById('trendAnalysis').innerHTML = html;
+        }
+
+        // ============ UTILITY FUNCTIONS ============
+        function formatDate(dateStr) {
+            const date = new Date(dateStr + 'T00:00:00');
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const dayNames = ['æ¥', 'æ', 'ç«', 'æ°´', 'æ¨', 'é', 'å'];
+            const dayName = dayNames[date.getDay()];
+            return `${month}/${day}(${dayName})`;
+        }
+
+        function getSubjectName(subject) {
+            const map = {
+                'math': 'ç®æ°',
+                'japanese': 'å
