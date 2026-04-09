@@ -524,14 +524,83 @@ function mark(id,r){
   if(S.lastDate!==todayKey){if(!S.lastDate||Math.floor((new Date(todayKey)-new Date(S.lastDate))/(1000*60*60*24))<=1)S.streak++;else S.streak=1;S.lastDate=todayKey}
   saveState();renderQuiz()}
 
-// ============ 学習ログ送信 ============
+// ============ 学習ログ送信（オフラインキュー付き） ============
 const GAS_URL='https://script.google.com/macros/s/AKfycbxOhZn9viPChDAg4mhtG2TtJI0M2EtESk4jKj8aeoaoYJWr0mtCU_or-WnPceovUzqeAQ/exec';
+
+function queueOfflineDrillLog(payload){
+  try{
+    const q=JSON.parse(localStorage.getItem('ei_drill_queue')||'[]');
+    q.push({t:new Date().toISOString(),p:payload});
+    localStorage.setItem('ei_drill_queue',JSON.stringify(q));
+    console.log('[Queue] Saved. Size:',q.length);
+  }catch(e){console.error('[Queue]',e)}
+}
+
+function flushOfflineQueue(){
+  try{
+    const q=JSON.parse(localStorage.getItem('ei_drill_queue')||'[]');
+    if(!q.length)return;
+    console.log('[Queue] Flushing',q.length,'items');
+    const remaining=[];
+    let idx=0;
+    function sendNext(){
+      if(idx>=q.length){
+        localStorage.setItem('ei_drill_queue',JSON.stringify(remaining));
+        console.log('[Queue] Flush done. Remaining:',remaining.length);
+        return;
+      }
+      const item=q[idx++];
+      fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(item.p)})
+        .then(()=>{console.log('[Queue] Sent',idx);setTimeout(sendNext,300)})
+        .catch(()=>{remaining.push(item);setTimeout(sendNext,300)});
+    }
+    sendNext();
+  }catch(e){console.error('[Queue]',e)}
+}
+
 function sendDrillLog(correct,wrong,total,catStats,weakCats){
   if(!GAS_URL)return;
   const startTime=S._quizStart||Date.now();
   const duration=Math.round((Date.now()-startTime)/1000);
-  const payload={subject:subLabel(S.subject),mode:S.mode||'daily',totalQ:total,correct:correct,wrong:wrong,accuracy:total>0?Math.round(correct/total*100):0,categories:catStats||{},weakCategories:weakCats||[],duration:duration,streak:S.streak||0};
-  try{fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)}).catch(()=>{})}catch(e){}
+  const payload={subject:subLabel(S.subject),mode:S.mode||'daily',totalQ:total,correct:correct,wrong:wrong,accuracy:total>0?Math.round(correct/total*100):0,categories:catStats||{},weakCategories:weakCats||[],duration:duration,streak:S.streak||0,timestamp:new Date().toISOString()};
+  fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)})
+    .then(()=>{console.log('[Log] Sent OK');flushOfflineQueue()})
+    .catch(()=>{console.warn('[Log] Failed - queuing');queueOfflineDrillLog(payload)});
+}
+
+// ============ 過去データ移行（1回のみ） ============
+function migrateToSpreadsheet(){
+  try{
+    if(localStorage.getItem('ei_drill_migrated')==='true'){console.log('[Migration] Already done');return}
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw){localStorage.setItem('ei_drill_migrated','true');return}
+    const st=JSON.parse(raw);
+    const hist=st.history||[];
+    if(!hist.length){localStorage.setItem('ei_drill_migrated','true');return}
+    console.log('[Migration] Sending',hist.length,'records one by one...');
+    let idx=0,ok=0;
+    function sendNext(){
+      if(idx>=hist.length){
+        console.log('[Migration] Done!',ok,'/',hist.length,'sent');
+        localStorage.setItem('ei_drill_migrated','true');
+        return;
+      }
+      const record=hist[idx++];
+      if(!record.subject){setTimeout(sendNext,100);return}
+      fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(record)})
+        .then(()=>{ok++;console.log('[Migration]',idx,'/',hist.length);setTimeout(sendNext,300)})
+        .catch(()=>{console.warn('[Migration] Failed at',idx);setTimeout(sendNext,300)});
+    }
+    sendNext();
+  }catch(e){console.error('[Migration]',e)}
+}
+
+function initMigration(){
+  try{
+    console.log('[Init] Starting migration check...');
+    migrateToSpreadsheet();
+    flushOfflineQueue();
+  }catch(e){console.error('[Init]',e)}
 }
 
 // ============ 結果 ============
@@ -622,6 +691,8 @@ function renderDash(){
 
 // 初期表示
 render();
+// 過去データ移行＆オフラインキュー処理
+initMigration();
 </script>
 </body>
 </html>
