@@ -510,11 +510,28 @@ function renderQuiz(){
     </div>`;loadKanjiSvgs()}
 function goTo(i){if(i<0||i>=S.quizQs.length)return;S.idx=i;renderQuiz();window.scrollTo(0,0)}
 function reveal(id){S.revealed[id]=true;renderQuiz()}
+// [FIX 2026-04-11] Toast shown when trying to change a locked answer
+function showLockToast(){
+  let el=document.getElementById('lockToast');
+  if(!el){
+    el=document.createElement('div');
+    el.id='lockToast';
+    el.style.cssText='position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#f59e0b;color:#fff;padding:10px 18px;border-radius:8px;font-weight:bold;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.3);opacity:0;transition:opacity .25s;font-size:.9rem';
+    document.body.appendChild(el);
+  }
+  el.textContent='🔒 この問題の答えはもう記録されています';
+  el.style.opacity='1';
+  clearTimeout(window._lockToastT);
+  window._lockToastT=setTimeout(()=>{el.style.opacity='0'},1800);
+}
 function mark(id,r){
+  // [FIX 2026-04-11] Lock first answer: once answered in this session, cannot be changed.
+  // Prevents the wrong→correct overwrite bug that erased incorrect marks from the log.
+  if(S.scores[id+'_c']){showLockToast();return}
   S.scores[id]=r;
   if(!S.history[id])S.history[id]={attempts:0,correct:0,wrong:0,lastResult:null};
-  const h=S.history[id],ck=id+'_c',prev=S.scores[ck];
-  if(!prev){h.attempts++;h[r]++;S.scores[ck]=r}else if(prev!==r){h[prev]--;h[r]++;S.scores[ck]=r}
+  const h=S.history[id],ck=id+'_c';
+  h.attempts++;h[r]++;S.scores[ck]=r;
   h.lastResult=r;
   // Update daily log
   if(!S.dailyLog[todayKey])S.dailyLog[todayKey]={correct:0,wrong:0,total:0};
